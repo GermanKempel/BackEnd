@@ -18,7 +18,7 @@ const env = async () => {
   const prodResult = await manager.getProducts();
   console.log(prodResult);
 
-  console.log(await manager.getProductById(1));
+  console.log(await manager.getProductById(2));
 
 }
 
