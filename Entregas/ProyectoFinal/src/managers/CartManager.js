@@ -1,20 +1,81 @@
+import fs from 'fs';
+import ProductManager from './ProductManager.js';
+
+const productManager = new ProductManager('./src/files/productos.json');
 export default class CartManager {
 
-  constructor() {
-    this.carts = []
+  constructor(path) {
+    this.path = path;
   }
 
-  async save(cart) {
-    if (this.carts.length === 0) {
-      cart.cid = 1;
-    } else {
-      cart.cid = this.carts[this.carts.length - 1].cid + 1;
+
+  async getCarts() {
+    try {
+      if (fs.existsSync(this.path)) {
+        const data = await fs.promises.readFile(this.path, 'utf-8');
+        const carts = JSON.parse(data);
+        return carts;
+      } else {
+        return []
+      }
+    } catch (error) {
+      console.log(error);
     }
-    this.carts.push(cart);
-    return cart;
   }
 
-  async getCartById(cid) {
-    return this.carts.find(cart => cart.cid === cid);
+
+  async addNewCart() {
+    try {
+      const cart = {
+        products: [],
+      }
+      const carts = await this.getCarts();
+      if (carts.length === 0) {
+        cart.id = 1;
+      } else {
+        cart.id = carts[carts.length - 1].id + 1;
+      }
+      carts.push(cart);
+      await fs.promises.writeFile(this.path, JSON.stringify(carts, null, '\t'));
+      return cart;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+
+  async addProductToCart(cartId, productId) {
+    try {
+      const carts = await this.getCarts();
+      const productById = await productManager.getProductById(productId);
+      carts.forEach((cart) => {
+        if (cart.id === cartId && productById.id === productId) {
+          let isInCart = cart.products.find((item) => item.product === productId)
+          if (isInCart) {
+            cart.products.forEach(item => {
+              if (item.product === productId) item.quantity++;
+              return item;
+            });
+          } else {
+            cart.products.push({ product: productById.id, quantity: 1 });
+          }
+        }
+      });
+      await fs.promises.writeFile(this.path, JSON.stringify(carts, null, '\t'));
+      return carts;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+
+  async getCartsById(id) {
+    try {
+      const carts = await this.getCarts();
+      const cart = carts.find((c) => c.id === id);
+      return cart;
+    } catch (error) {
+      console.log(error);
+    }
   }
 }

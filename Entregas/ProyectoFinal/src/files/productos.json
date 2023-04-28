@@ -1,11 +1,33 @@
-{
-	"title": "Remera",
-	"description": "Remera Nirvana",
-	"price": 1200,
-	"thumbnail": "https://www.soyturemera.com.ar/productos/nirvana/#product-gallery",
-	"code": "1",
-	"stock": 20,
-	"category": "Ropa",
-	"status": true,
-	"pid": 1
-}
+[
+	{
+		"title": "Remera",
+		"description": "Remera Nirvana",
+		"price": 1200,
+		"thumbnail": "https://www.soyturemera.com.ar/productos/nirvana/#product-gallery",
+		"code": "1",
+		"stock": 20,
+		"category": "Ropa",
+		"status": true,
+		"id": 1
+	},
+	{
+		"title": "Remera",
+		"description": "Remera Nirvana",
+		"price": 1550,
+		"thumbnail": "https://www.soyturemera.com.ar/productos/nirvana/#product-gallery",
+		"code": "4",
+		"stock": 20,
+		"category": "Ropa",
+		"id": 3
+	},
+	{
+		"title": "Remera",
+		"description": "Remera Nirvana",
+		"price": 1200,
+		"thumbnail": "https://www.soyturemera.com.ar/productos/nirvana/#product-gallery",
+		"code": "7",
+		"stock": 20,
+		"category": "Ropa",
+		"id": 4
+	}
+]

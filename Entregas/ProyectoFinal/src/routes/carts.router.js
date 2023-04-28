@@ -5,21 +5,25 @@ import ProductManager from '../managers/ProductManager.js';
 
 const router = Router();
 
-const cartManager = new CartManager();
+const cartManager = new CartManager('src/files/carrito.json');
 
 router.post('/', async (req, res) => {
 
   const cart = {
     products: [],
   }
-  const result = await cartManager.save();
+  const result = await cartManager.addNewCart(cart);
   res.send({ status: 'ok', result });
+});
 
+router.get('/', async (req, res) => {
+  const carts = await cartManager.getCarts();
+  res.send({ status: 'ok', carts });
 });
 
 router.get('/:cid', async (req, res) => {
   const cartId = Number(req.params.cid);
-  const cart = await cartManager.getCartById(cartId);
+  const cart = await cartManager.getCartsById(cartId);
   if (!cart) {
     res.status(404).send({ status: 'error', message: 'Cart not found' });
     return;
@@ -28,34 +32,11 @@ router.get('/:cid', async (req, res) => {
 });
 
 
-router.post('/:cid/product/:pid', (req, res) => {
+router.post('/:cid/product/:pid', async (req, res) => {
   const cartId = Number(req.params.cid);
   const productId = Number(req.params.pid);
-  const cart = cartManager.getCartById(cartId);
-  const product = ProductManager.getProductById(productId);
-  const quantity = parseInt(req.body.quantity);
-  if (!cart) {
-    res.status(404).send({ status: 'error', message: 'Cart not found' });
-    return;
-  }
-  if (!product) {
-    res.status(404).send({ status: 'error', message: 'Product not found' });
-    return;
-  }
-  if (quantity <= 0) {
-    res.status(400).send({ status: 'error', message: 'Quantity must be greater than 0' });
-    return;
-  }
-  if (quantity > product.stock) {
-    res.status(400).send({ status: 'error', message: 'Quantity must be less than stock' });
-    return;
-  }
-  const cartProduct = {
-    product,
-    quantity,
-  }
-  cart.products.push(cartProduct);
-  res.send({ status: 'ok', cart });
+  const result = await cartManager.addProductToCart(cartId, productId);
+  res.send({ status: 'ok', result });
 });
 
 export default router;
