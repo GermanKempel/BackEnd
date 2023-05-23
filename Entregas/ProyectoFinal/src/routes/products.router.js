@@ -1,10 +1,10 @@
 import { Router } from 'express';
-import ProductManager from '../managers/ProductManager.js';
+import ProductsManager from '../dao/dbManagers/products.managers.js';
 
 
 const router = Router();
 
-const productManager = new ProductManager("src/files/productos.json");
+const productManager = new ProductsManager();
 
 router.post('/', async (req, res) => {
   const { title, description, price, thumbnail, code, stock, category } = req.body;
