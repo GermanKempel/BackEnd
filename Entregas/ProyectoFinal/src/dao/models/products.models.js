@@ -1,17 +1,17 @@
 import mongoose from "mongoose";
 
-const productsCollection = "products";
+const productsCollection = "productsModel";
 
 const productsSchema = new mongoose.Schema({
-    id: { type: Number },
-    title: { type: String },
-    description: { type: String },
-    code: { type: String },
-    price: { type: Number },
-    status: { type: String  },
-    stock: { type: Number  },
-    category: { type: String },
-    thumbnail: { type: String },
+    id: Number,
+    title: String,
+    description: String,
+    code: String,
+    price: Number,
+    status: String,
+    stock: Number ,
+    category: String,
+    thumbnail: String,
 });
 
-export const products = mongoose.model(productsCollection, productsSchema);
+export const productsModel = mongoose.model(productsCollection, productsSchema);

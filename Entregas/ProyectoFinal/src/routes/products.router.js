@@ -22,8 +22,24 @@ router.post('/', async (req, res) => {
 
 
 router.get('/', async (req, res) => {
-  const products = await productManager.getAll();
-  res.send({ status: 'ok', products });
+   const { limit = 10, page = 1, sort, query } = req.query;
+
+  // Construir el objeto de opciones para la consulta
+  const options = {
+    limit: parseInt(limit),
+    page: parseInt(page),
+    sort: sort === 'desc' ? '-price' : sort === 'asc' ? 'price' : null,
+  };
+
+  // Construir el objeto de filtro para la consulta
+  const filter = query ? { title: { $regex: query, $options: 'i' } } : {};
+
+  try {
+    const products = await productManager.getAll(options, filter);
+    res.send({ status: 'ok', products });
+  } catch (error) {
+    res.status(500).send({ status: 'error', message: 'An error occurred while fetching products' });
+  }
 });
 
 
