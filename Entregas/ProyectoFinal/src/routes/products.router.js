@@ -8,10 +8,12 @@ const productManager = new ProductsManager();
 
 router.post('/', async (req, res) => {
   const { title, description, price, thumbnail, code, stock, category } = req.body;
+  
   if (!title || !description || !price || !thumbnail || !code || !stock || !category) {
     res.status(400).send({ status: 'error', message: 'Faltan datos' });
     return;
   }
+
   const product = await productManager.addProduct(title, description, price, thumbnail, code, stock, category);
 
   const io = req.app.get('socketio');

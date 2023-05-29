@@ -1,5 +1,5 @@
-import productsModel from '../models/products.model.js';
-import cartsModel from '../models/carts.models.js';
+import {productsModel} from '../models/products.models.js';
+import {cartsModel} from '../models/carts.models.js';
 
 export default class ProductsManager {
     constructor() {
@@ -10,9 +10,8 @@ async getAll() {
     return await productsModel.find();
 }
 
-async addProduct(title, description, price, thumbnail, code, stock, category) {
-    const newProduct = new productsModel({ title, description, price, thumbnail, code, stock, category });
-    return await newProduct.save();
+async addProduct(product) {
+    return await productsModel.create(product);
 }
 
 async getProductById(id) {
