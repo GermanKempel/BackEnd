@@ -14,12 +14,13 @@ router.post('/', async (req, res) => {
     return;
   }
 
-  const product = await productManager.addProduct(title, description, price, thumbnail, code, stock, category);
-
-  const io = req.app.get('socketio');
-  io.emit('showProducts', await productManager.getAll());
-
-  res.send({ status: 'ok', product });
+  try {
+    const newProduct = await productManager.addProduct(req.body);
+    res.send({ status: 'ok', payload: newProduct });
+  }
+  catch (error) {
+    res.status(500).send({ status: 'error', error });
+  }
 });
 
 
@@ -82,8 +83,8 @@ router.delete('/:pid', async (req, res) => {
   }
   const result = await productManager.deleteProduct(productId);
 
-  const io = req.app.get('socketio');
-  io.emit('showProducts', await productManager.getAll());
+  // const io = req.app.get('socketio');
+  // io.emit('showProducts', await productManager.getAll());
 
   res.send({ status: 'ok', result });
 });
