@@ -1,63 +1,51 @@
 import { Router } from 'express';
-import userModel from '../models/users.models.js';
+import passport from 'passport';
+
 
 const router = Router();
 
-router.post('/register', async (req, res) => {
-    try {
-        const { first_name, last_name, email, age, password } = req.body;
-        const exists = await userModel.findOne({ email });
+router.post('/register', passport.authenticate('register', { failureRedirect: 'fail_register' }), async (req, res) => {
+    res.send({ status: 'success', message: 'User registered' });
+});
 
-        if (exists) return res.status(400).send({ status: 'error', error: 'User already exists' });
+router.get('/fail_register', async (req, res) => {
+    res.send({ status: 'error', error: 'Register failed' });
+});
 
-        const user = {
-            first_name,
-            last_name,
-            email,
-            age,
-            password
-        }
+router.post('/login', passport.authenticate('login', { failureRedirect: 'fail_login' }), async (req, res) => {
+    if (!req.user) return res.status(400).send({ status: 'error', error: 'Invalid credentials' });
 
-        await userModel.create(user);
-        res.send({ status: 'success', message: 'User registered' })
-    } catch (error) {
-        res.status(500).send({ status: 'error', error });
+    req.session.user = {
+        first_name: req.user.first_name,
+        last_name: req.user.last_name,
+        email: req.user.email,
+        age: req.user.age,
+        role: 'user'
     }
-})
 
-router.post('/login', async (req, res) => {
-    try {
-        const { email, password } = req.body;
-      
-        if (email === 'adminCoder@coder.com' && password === 'admincod3r123') {
-            req.session.user.role = {
-                        name: `${user.first_name} ${user.last_name}`,
-                        email: user.email,
-                        age: user.age,
-                        role: 'admin'
-                    }
-        }
+    res.send({ status: 'success', message: 'User logged in' });
+});
 
-        const user = await userModel.findOne({ email, password });
+router.get('/fail_login', async (req, res) => {
+    res.send({ status: 'error', error: 'Login failed' });
+});
 
-        if (!user) return res.status(400).send({ status: 'error', error: 'Incorrect credentials' });
+router.get('/github', passport.authenticate(
+    'github', { scope: ['user:email'] }
+), async (req, res) => {
+    res.send({ status: "success", message: "User registered" })
+});
 
-        req.session.user = {
-            name: `${user.first_name} ${user.last_name}`,
-            email: user.email,
-            age: user.age,
-            role: "user"
-        }
-
-        res.send({ status: 'success', message: 'Login success' })
-    } catch (error) {
-        res.status(500).send({ status: 'error', error });
-    }
+router.get('/github-callback', passport.authenticate(
+    'github', { failureRedirect: '/login' }
+), async (req, res) => {
+    req.session.user = req.user;
+    res.redirect('/')
 });
 
 router.get('/logout', (req, res) => {
     req.session.destroy(err => {
-        if(err) return res.status(500).send({ status: 'error', error: 'Logout fail' });
+        if (err) return res.status(500).send({ status: 'error', error: 'Logout fail' });
         res.redirect('/')
     })
 });

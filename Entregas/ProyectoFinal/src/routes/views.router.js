@@ -20,7 +20,7 @@ router.get('/products', async (req, res) => {
   const { page = 1, limit = 10 } = req.query;
 
   // Obtener productos paginados
-  const products = await productManager.getPaginatedProducts(parseInt(page), parseInt(limit));
+  const products = await productManager.getPaginatedProducts({}, { page, limit });
 
   res.render('products', { products });
 });
@@ -59,12 +59,12 @@ router.get('/carts/:cid', async (req, res) => {
 
 //Acceso público y privado
 const publicAccess = (req, res, next) => {
-  if(req.session.user) return res.redirect('/products');
+  if (req.session.user) return res.redirect('/products');
   next();
 }
 
 const privateAccess = (req, res, next) => {
-  if(!req.session.user) return res.redirect('/login');
+  if (!req.session.user) return res.redirect('/login');
   next();
 }
 
@@ -78,7 +78,7 @@ router.get('/login', publicAccess, (req, res) => {
 
 router.get('/', privateAccess, (req, res) => {
   res.render('profile', {
-      user: req.session.user
+    user: req.session.user
   });
 });
 
