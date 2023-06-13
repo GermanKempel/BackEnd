@@ -41,8 +41,12 @@ async query(options) {
     return await productsModel.find(options);
 }
 
-async getPaginatedProducts(filter, options){
-    return await productsModel.paginate(filter, options);
+async getPaginatedProducts(page, limit) {
+    const options = {
+        page,
+        limit
+    };
+    return await productsModel.paginate({}, options);
 }
 
 async getProductsInCart(cartId) {

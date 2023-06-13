@@ -28,11 +28,6 @@ app.engine('handlebars', handlebars.engine());
 app.set('views', `${__dirname}/views`);
 app.set('view engine', 'handlebars');
 
-app.use('/', viewsRouter)
-app.use("/api/products", productsRouter);
-app.use("/api/carts", cartsRouter);
-app.use('/api/sessions', sessionsRouter);
-
 app.use(session({
   store: MongoStore.create({
     client: mongoose.connection.getClient(),
@@ -43,6 +38,10 @@ app.use(session({
   saveUninitialized: true,
 }));
 
+app.use('/', viewsRouter)
+app.use("/api/products", productsRouter);
+app.use("/api/carts", cartsRouter);
+app.use('/api/sessions', sessionsRouter);
 const server = app.listen(8080, () =>
   console.log("Server listening on port 8080"));
 
