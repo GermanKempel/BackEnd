@@ -1,17 +1,21 @@
 import express from "express";
 import { Server } from 'socket.io';
-import handlebars from "express-handlebars";
-import __dirname from './utils.js';
-import productsRouter from "./routes/products.router.js";
-import cartsRouter from "./routes/carts.router.js";
-import viewsRouter from "./routes/views.router.js";
 import ProductManager from "./dao/fileManagers/ProductManager.js";
-import mongoose from 'mongoose';
 import MongoStore from 'connect-mongo';
 import session from 'express-session';
 import sessionsRouter from "./routes/sessions.router.js";
+import handlebars from "express-handlebars";
+import { __dirname } from './utils.js';
+import productsRouter from "./routes/products.router.js";
+import cartsRouter from "./routes/carts.router.js";
+import viewsRouter from "./routes/views.router.js";
+import mongoose from 'mongoose';
 import initializePassport from './config/passport.config.js';
 import passport from 'passport';
+import UsersRouter from "./routes/users.router.js";
+
+
+const usersRouter = new UsersRouter();
 
 const app = express();
 
@@ -53,19 +57,21 @@ app.use('/', viewsRouter)
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
 app.use('/api/sessions', sessionsRouter);
+app.use('/api/users', usersRouter.router);
+app.use('/api/auth', usersRouter.router);
 
 const server = app.listen(8080, () =>
   console.log("Server listening on port 8080"));
 
-const io = new Server(server);
+// const io = new Server(server);
 
-io.on('connection', async socket => {
-  console.log('Nueva conexión');
+// io.on('connection', async socket => {
+//   console.log('Nueva conexión');
 
-  const productManager = new ProductManager("src/files/productos.json");
-  const products = await productManager.getAll();
+//   const productManager = new ProductManager("src/files/productos.json");
+//   const products = await productManager.getAll();
 
-  io.emit('showProducts', products)
+//   io.emit('showProducts', products)
 
-});
+// });
 
