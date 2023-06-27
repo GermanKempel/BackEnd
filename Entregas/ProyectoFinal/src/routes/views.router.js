@@ -7,9 +7,9 @@ const router = Router();
 const productManager = new ProductsManager();
 const cartManager = new CartsManager();
 
-router.get('/', async (req, res) => {
-  res.render('home', { products: await productManager.getAll() });
-});
+// router.get('/', async (req, res) => {
+//   res.render('home', { products: await productManager.getAll() });
+// });
 
 router.get('/realtimeproducts', async (req, res) => {
   res.render('realtimeproducts', { products: await productManager.getAll() });

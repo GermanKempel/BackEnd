@@ -20,7 +20,6 @@ router.post('/login', passport.authenticate('login', { failureRedirect: 'fail_lo
         last_name: req.user.last_name,
         email: req.user.email,
         age: req.user.age,
-        role: 'user'
     }
 
     res.send({ status: 'success', message: 'User logged in' });

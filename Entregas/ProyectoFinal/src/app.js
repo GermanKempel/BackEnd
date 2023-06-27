@@ -12,6 +12,8 @@ import session from 'express-session';
 import sessionsRouter from "./routes/sessions.router.js";
 import initializePassport from './config/passport.config.js';
 import passport from 'passport';
+import authRouter from './routes/auth.router.js'
+import cookieParser from 'cookie-parser';
 
 const app = express();
 
@@ -25,6 +27,7 @@ try {
 app.use(express.static(`${__dirname}/public`));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 app.use(session({
   store: MongoStore.create({
@@ -40,12 +43,15 @@ initializePassport();
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.engine('handlebars', handlebars.engine({
-  runtimeOptions: {
-    allowProtoPropertiesByDefault: true,
-    allowProtoMethodsByDefault: true
-  }
-}));
+// app.engine('handlebars', handlebars.engine({
+//   runtimeOptions: {
+//     allowProtoPropertiesByDefault: true,
+//     allowProtoMethodsByDefault: true
+//   }
+// }));
+
+app.engine('handlebars', handlebars.engine())
+
 app.set('views', `${__dirname}/views`);
 app.set('view engine', 'handlebars');
 
@@ -53,19 +59,20 @@ app.use('/', viewsRouter)
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
 app.use('/api/sessions', sessionsRouter);
+app.use('/api/auth', authRouter);
 
-const server = app.listen(8080, () =>
+app.listen(8080, () =>
   console.log("Server listening on port 8080"));
 
-const io = new Server(server);
+// const io = new Server(server);
 
-io.on('connection', async socket => {
-  console.log('Nueva conexión');
+// io.on('connection', async socket => {
+//   console.log('Nueva conexión');
 
-  const productManager = new ProductManager("src/files/productos.json");
-  const products = await productManager.getAll();
+//   const productManager = new ProductManager("src/files/productos.json");
+//   const products = await productManager.getAll();
 
-  io.emit('showProducts', products)
+//   io.emit('showProducts', products)
 
-});
+// });
 

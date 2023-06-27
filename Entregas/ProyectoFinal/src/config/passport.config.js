@@ -3,53 +3,75 @@ import local from 'passport-local';
 import userModel from '../dao/models/users.models.js';
 import { createHash, isValidPassword } from '../utils.js';
 import GitHubStrategy from 'passport-github2';
+import jwt from 'passport-jwt';
+
+const JWTStrategy = jwt.Strategy;
+const ExtractJWT = jwt.ExtractJwt;
 
 const LocalStrategy = local.Strategy;
 
 const initializePassport = () => {
-  passport.use('register', new LocalStrategy({
-    passReqToCallback: true,
-    usernameField: 'email',
-  }, async (req, username, password, done) => {
-    const { first_name, last_name, email, age } = req.body;
-    try {
-      const user = await userModel.findOne({ email: username });
-      if (user) return done(null, false);
-      const newUser = {
-        first_name,
-        last_name,
-        email,
-        age,
-        password: createHash(password),
-      };
-      const createdUser = await userModel.create(newUser);
-      return done(null, createdUser);
-    } catch (error) {
-      return done('Error al obtener el usuario: ${error}');
-    }
-  }));
 
-  passport.use('login', new LocalStrategy({
-    usernameField: 'email',
-  }, async (username, password, done) => {
+  passport.use('jwt', new JWTStrategy({
+    jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor]),
+    secretOrKey: 'coder39760'
+  }, async (jwt_payload, done) => {
     try {
-      const user = await userModel.findOne({ email: username });
-      if (email === 'adminCoder@coder.com' && password === 'admincod3r123') {
-        req.session.user.role = {
-          name: `${user.first_name} ${user.last_name}`,
-          email: user.email,
-          age: user.age,
-          role: 'admin'
-        }
-      }
-      if (!user) return done(null, false);
-      if (!isValidPassword(password, user.password)) return done(null, false);
-      delete user.password;
-      return done(null, user);
+      // if(!jwt_payload.jkhasdfakshdf) return done(null, false, { messages: 'User not found' })
+      return done(null, jwt_payload.user);
+      //req.user = {}
     } catch (error) {
-      return done('Error al obtener el usuario: ${error}');
+      return done(error);
     }
-  }));
+  }))
+
+  // passport.use('register', new LocalStrategy({
+  //   passReqToCallback: true, //permite acceder al objeto request como cualquier otro middleware,
+  //   usernameField: 'email'
+  // }, async (req, username, password, done) => {
+  //   const { first_name, last_name, email, age } = req.body;
+  //   try {
+  //     const user = await userModel.findOne({ email: username });
+
+  //     if (user) {
+  //       return done(null, false)
+  //     }
+
+  //     const userToSave = {
+  //       first_name,
+  //       last_name,
+  //       email,
+  //       age,
+  //       password: createHash(password)
+  //     }
+
+  //     const result = await userModel.create(userToSave);
+  //     return done(null, result)
+
+  //   } catch (error) {
+  //     return done(`Error al obtener el usario: ${error}`)
+  //   }
+  // }));
+
+  // passport.use('login', new LocalStrategy({
+  //   usernameField: 'email'
+  // }, async (username, password, done) => {
+  //   try {
+  //     const user = await userModel.findOne({ email: username });
+
+  //     if (!user) {
+  //       return done(null, false)
+  //     }
+
+  //     if (!isValidPassword(user, password)) return done(null, false)
+
+  //     return done(null, user)
+  //     //req.user
+
+  //   } catch (error) {
+  //     return done(`Error al obtener el usario: ${error}`)
+  //   }
+  // }));
 
   passport.use(new GitHubStrategy({
     clientID: 'la quite por seguridad',
@@ -86,5 +108,14 @@ const initializePassport = () => {
     done(null, user);
   });
 };
+
+
+const cookieExtractor = req => {
+  let token = null;
+  if (req && req.cookies) {
+    token = req.cookies['coderCookieToken'];
+  }
+  return token;
+}
 
 export default initializePassport;
