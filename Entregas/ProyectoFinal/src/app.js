@@ -59,7 +59,6 @@ app.use('/', viewsRouter)
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
 app.use('/api/sessions', sessionsRouter);
-app.use('/api/auth', authRouter);
 
 app.listen(8080, () =>
   console.log("Server listening on port 8080"));

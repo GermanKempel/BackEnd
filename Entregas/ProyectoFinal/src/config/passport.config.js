@@ -4,6 +4,9 @@ import userModel from '../dao/models/users.models.js';
 import { createHash, isValidPassword } from '../utils.js';
 import GitHubStrategy from 'passport-github2';
 import jwt from 'passport-jwt';
+import Users from '../dao/dbManagers/users.manager.js';
+
+const usersManager = new Users();
 
 const JWTStrategy = jwt.Strategy;
 const ExtractJWT = jwt.ExtractJwt;
@@ -25,53 +28,44 @@ const initializePassport = () => {
     }
   }))
 
-  // passport.use('register', new LocalStrategy({
-  //   passReqToCallback: true, //permite acceder al objeto request como cualquier otro middleware,
-  //   usernameField: 'email'
-  // }, async (req, username, password, done) => {
-  //   const { first_name, last_name, email, age } = req.body;
-  //   try {
-  //     const user = await userModel.findOne({ email: username });
+  passport.use('register', new LocalStrategy({
+    passReqToCallback: true, //permite acceder al objeto request como cualquier otro middleware,
+    usernameField: 'email'
+  }, async (req, username, password, done) => {
 
-  //     if (user) {
-  //       return done(null, false)
-  //     }
+    const hashedPassword = createHash(password);
 
-  //     const userToSave = {
-  //       first_name,
-  //       last_name,
-  //       email,
-  //       age,
-  //       password: createHash(password)
-  //     }
+    const newUser = {
+      ...req.body
+    };
 
-  //     const result = await userModel.create(userToSave);
-  //     return done(null, result)
+    newUser.password = hashedPassword;
 
-  //   } catch (error) {
-  //     return done(`Error al obtener el usario: ${error}`)
-  //   }
-  // }));
+    const result = await usersManager.save(newUser);
 
-  // passport.use('login', new LocalStrategy({
-  //   usernameField: 'email'
-  // }, async (username, password, done) => {
-  //   try {
-  //     const user = await userModel.findOne({ email: username });
+    return done(null, result)
 
-  //     if (!user) {
-  //       return done(null, false)
-  //     }
+  }));
 
-  //     if (!isValidPassword(user, password)) return done(null, false)
+  passport.use('login', new LocalStrategy({
+    usernameField: 'email'
+  }, async (username, password, done) => {
+    try {
+      const user = await userModel.findOne({ email: username });
 
-  //     return done(null, user)
-  //     //req.user
+      if (!user) {
+        return done(null, false)
+      }
 
-  //   } catch (error) {
-  //     return done(`Error al obtener el usario: ${error}`)
-  //   }
-  // }));
+      if (!isValidPassword(user, password)) return done(null, false)
+
+      return done(null, user)
+      //req.user
+
+    } catch (error) {
+      return done(`Error al obtener el usario: ${error}`)
+    }
+  }));
 
   passport.use(new GitHubStrategy({
     clientID: 'la quite por seguridad',

@@ -4,6 +4,7 @@ import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken';
 import passport from 'passport';
 
+
 const PRIVATE_KEY = 'coder39760';
 
 export const generateToken = (user) => {
