@@ -1,28 +1,20 @@
 import express from "express";
-import { Server } from 'socket.io';
 import handlebars from "express-handlebars";
 import __dirname from './utils.js';
 import productsRouter from "./routes/products.router.js";
 import cartsRouter from "./routes/carts.router.js";
 import viewsRouter from "./routes/views.router.js";
-import ProductManager from "./dao/fileManagers/ProductManager.js";
 import mongoose from 'mongoose';
 import MongoStore from 'connect-mongo';
 import session from 'express-session';
 import sessionsRouter from "./routes/sessions.router.js";
 import initializePassport from './config/passport.config.js';
 import passport from 'passport';
-import authRouter from './routes/auth.router.js'
 import cookieParser from 'cookie-parser';
+import './dao/dbManagers/dbConfig.js'
+import config from './config/config.js';
 
 const app = express();
-
-try {
-  await mongoose.connect('mongodb+srv://GermanKempel:GcsLTjZBjYXUT5Ht@cluster0.tnbfe67.mongodb.net/?retryWrites=true&w=majority');
-  console.log('Base de datos conectada');
-} catch (error) {
-  console.log('Error al conectar a la base de datos');
-}
 
 app.use(express.static(`${__dirname}/public`));
 app.use(express.json());
@@ -60,8 +52,10 @@ app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
 app.use('/api/sessions', sessionsRouter);
 
-app.listen(8080, () =>
-  console.log("Server listening on port 8080"));
+const PORT = config.port;
+
+app.listen(PORT, () =>
+  console.log("Server listening on port" + PORT));
 
 // const io = new Server(server);
 

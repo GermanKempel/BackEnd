@@ -1,8 +1,8 @@
-import userModel from '../models/users.models.js';
+import userModel from './models/users.model.js';
 
-export default class Users {
+export default class UsersDao {
   constructor() {
-    console.log('Working users with DB')
+    console.log('Working Users with DB')
   }
 
   getAll = async () => {

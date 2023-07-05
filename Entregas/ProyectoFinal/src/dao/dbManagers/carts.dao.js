@@ -1,8 +1,11 @@
-import {cartsModel} from '../models/carts.models.js';
-import {productsModel} from '../models/products.models.js';
+import { cartsModel } from './models/carts.model.js';
+import { productsModel } from './models/products.model.js';
 
-class CartsManager {
-  
+export default class CartsDao {
+  constructor() {
+    console.log('Working Carts with DB');
+  }
+
   async addNewCart(cartData) {
     const cart = new cartsModel(cartData);
     return cart.save();
@@ -58,7 +61,7 @@ class CartsManager {
   }
 
   async updateProductQuantity(cartId, productId, quantity) {
-    const cart = await  cartsModel.findById(cartId);
+    const cart = await cartsModel.findById(cartId);
     if (!cart) {
       return { status: 'error', message: 'Cart not found' };
     }
@@ -87,5 +90,3 @@ class CartsManager {
     return { status: 'ok', message: 'All products removed from cart successfully' };
   }
 }
-
-export default CartsManager;

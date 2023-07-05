@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import ProductsManager from '../dao/dbManagers/products.managers.js';
-import CartsManager from '../dao/dbManagers/carts.managers.js';
+import ProductsManager from '../dao/dbManagers/products.dao.js';
+import CartsManager from '../dao/dbManagers/carts.dao.js';
 
 const router = Router();
 
@@ -58,26 +58,26 @@ router.get('/carts/:cid', async (req, res) => {
 });
 
 //Acceso público y privado
-const publicAccess = (req, res, next) => {
-  if (req.session.user) return res.redirect('/products');
-  next();
-}
+// const publicAccess = (req, res, next) => {
+//   if (req.session.user) return res.redirect('/products');
+//   next();
+// }
 
-const privateAccess = (req, res, next) => {
-  if (!req.session.user) return res.redirect('/login');
-  next();
-}
+// const privateAccess = (req, res, next) => {
+//   if (!req.session.user) return res.redirect('/login');
+//   next();
+// }
 
-router.get('/register', publicAccess, (req, res) => {
+router.get('/register', (req, res) => {
   res.render('register');
 });
 
-router.get('/login', publicAccess, (req, res) => {
+router.get('/login', (req, res) => {
   res.render('login');
 });
 
-router.get('/', privateAccess, (req, res) => {
-  res.render('profile', {
+router.get('/', (req, res) => {
+  res.render('home', {
     user: req.session.user
   });
 });

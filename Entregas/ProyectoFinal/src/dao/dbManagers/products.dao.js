@@ -1,7 +1,7 @@
-import { productsModel } from '../models/products.models.js';
-import { cartsModel } from '../models/carts.models.js';
+import { productsModel } from './models/products.model.js';
+import { cartsModel } from './models/carts.model.js';
 
-export default class ProductsManager {
+export default class ProductsDao {
     constructor() {
         console.log('Working Products with DB');
     }

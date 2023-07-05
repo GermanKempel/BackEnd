@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import passport from 'passport';
-import Users from '../dao/dbManagers/users.manager.js';
+import Users from '../dao/dbManagers/users.dao.js';
 import { authorization, generateToken, passportCall, isValidPassword } from '../utils.js';
 
 
@@ -21,7 +21,7 @@ router.get('/fail_register', async (req, res) => {
     res.send({ status: 'error', error: 'Register failed' });
 });
 
-router.post('/login', passport.authenticate('login', { failureRedirect: 'fail_login' }), async (req, res) => {
+router.post('/login', passport.authenticate('jwt', { failureRedirect: 'fail_login' }), async (req, res) => {
     if (!req.user) return res.status(400).send({ status: 'error', error: 'Invalid credentials' });
 
     req.session.user = {

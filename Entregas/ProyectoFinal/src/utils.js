@@ -3,9 +3,9 @@ import { fileURLToPath } from 'url'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken';
 import passport from 'passport';
+import config from '../src/config/config.js'
 
-
-const PRIVATE_KEY = 'coder39760';
+const PRIVATE_KEY = config.private_key;
 
 export const generateToken = (user) => {
   const token = jwt.sign({ user }, PRIVATE_KEY, { expiresIn: '24h' });
@@ -51,6 +51,5 @@ export const isValidPassword = (user, password) => bcrypt.compareSync(password, 
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
-
 
 export default __dirname

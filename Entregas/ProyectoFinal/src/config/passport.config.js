@@ -1,10 +1,11 @@
 import passport from 'passport';
 import local from 'passport-local';
-import userModel from '../dao/models/users.models.js';
+import userModel from '../dao/dbManagers/models/users.model.js';
 import { createHash, isValidPassword } from '../utils.js';
 import GitHubStrategy from 'passport-github2';
 import jwt from 'passport-jwt';
-import Users from '../dao/dbManagers/users.manager.js';
+import Users from '../dao/dbManagers/users.dao.js';
+import config from './config.js'
 
 const usersManager = new Users();
 
@@ -13,11 +14,15 @@ const ExtractJWT = jwt.ExtractJwt;
 
 const LocalStrategy = local.Strategy;
 
+const private_key = config.private_key;
+const Github_clientID = config.Github_clientID;
+const Github_clientSecret = config.Github_clientSecret;
+
 const initializePassport = () => {
 
   passport.use('jwt', new JWTStrategy({
     jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor]),
-    secretOrKey: 'coder39760'
+    secretOrKey: private_key
   }, async (jwt_payload, done) => {
     try {
       // if(!jwt_payload.jkhasdfakshdf) return done(null, false, { messages: 'User not found' })
@@ -68,8 +73,9 @@ const initializePassport = () => {
   }));
 
   passport.use(new GitHubStrategy({
-    clientID: 'la quite por seguridad',
-    clientSecret: 'la quite por seguridad',
+
+    clientID: Github_clientID,
+    clientSecret: Github_clientSecret,
     callbackURL: 'http://localhost:8080/api/sessions/github-callback',
     scope: ['user:email']
   }, async (accessToken, refreshToken, profile, done) => {
