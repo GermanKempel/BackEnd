@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 export default {
-  persistance: process.env.PERSISTANCE,
+  persistence: process.env.PERSISTENCE,
   mongoURL: process.env.MONGO_URL,
   port: process.env.PORT,
   private_key: process.env.PRIVATE_KEY,

@@ -33,6 +33,10 @@ const updateProductQuantity = async (cartId, productId, quantity) => {
   return await CARTSDAO.updateProductQuantity(cartId, productId, quantity);
 }
 
+const purchaseCart = async (cartId) => {
+  return await CARTSDAO.purchaseCart(cartId);
+}
+
 export {
   saveCart,
   getAllCarts,
@@ -41,5 +45,6 @@ export {
   removeProductFromCart,
   removeAllProductsFromCart,
   updateCart,
-  updateProductQuantity
+  updateProductQuantity,
+  purchaseCart
 }

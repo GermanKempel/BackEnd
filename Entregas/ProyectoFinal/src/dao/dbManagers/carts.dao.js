@@ -89,4 +89,30 @@ export default class CartsDao {
 
     return { status: 'ok', message: 'All products removed from cart successfully' };
   }
+
+  async purchaseCart(cartId) {
+    const cart = await cartsModel.findById(cartId);
+    if (!cart) {
+      return { status: 'error', message: 'Cart not found' };
+    }
+
+    cart.products = [];
+    await cart.save();
+
+    for (const item of cart.products) {
+      const product = await productsModel.findById(item._id);
+
+      if (!product) {
+        return { status: 'error', message: 'Product not found' };
+      }
+      else if (product.stock < item.quantity) {
+        product.stock -= item.quantity;
+      }
+      else {
+        return { status: 'error', message: 'Not enough stock' };
+      }
+      await product.save();
+    }
+    return { status: 'ok', message: 'Purchase completed' };
+  }
 }

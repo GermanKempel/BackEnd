@@ -2,7 +2,7 @@ import fs from 'fs';
 import ProductManager from './products.dao.js';
 
 const productManager = new ProductManager('./src/files/productos.json');
-export default class CartManager {
+export default class CartsDao {
 
   constructor(path) {
     this.path = path;

@@ -6,7 +6,8 @@ import {
   removeProductFromCart as removeProductFromCartService,
   removeAllProductsFromCart as removeAllProductsFromCartService,
   updateCart as updateCartService,
-  updateProductQuantity as updateProductQuantityService
+  updateProductQuantity as updateProductQuantityService,
+  purchaseCart as purchaseCartService
 } from '../services/carts.services.js';
 
 const saveCart = async (req, res) => {
@@ -65,6 +66,12 @@ const updateProductQuantity = async (req, res) => {
   res.send({ status: 'ok', result });
 }
 
+const purchaseCart = async (req, res) => {
+  const cartId = Number(req.params.cid);
+  const result = await purchaseCartService(cartId);
+  res.send({ status: 'ok', result });
+}
+
 export {
   saveCart,
   getAllCarts,
@@ -73,5 +80,6 @@ export {
   removeProductFromCart,
   removeAllProductsFromCart,
   updateCart,
-  updateProductQuantity
+  updateProductQuantity,
+  purchaseCart
 }
