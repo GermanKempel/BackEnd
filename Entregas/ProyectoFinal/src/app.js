@@ -4,6 +4,7 @@ import __dirname from './utils.js';
 import productsRouter from "./routes/products.router.js";
 import cartsRouter from "./routes/carts.router.js";
 import viewsRouter from "./routes/views.router.js";
+import usersRouter from "./routes/users.router.js";
 import mongoose from 'mongoose';
 import MongoStore from 'connect-mongo';
 import session from 'express-session';
@@ -51,6 +52,7 @@ app.use('/', viewsRouter)
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
 app.use('/api/sessions', sessionsRouter);
+app.use('/api/users', usersRouter);
 
 const PORT = config.port;
 

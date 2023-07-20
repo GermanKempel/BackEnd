@@ -1,24 +1,33 @@
-import { PRODUCTSDAO } from "../dao/index.js";
+import ProductRepository from '../repositories/products.repository.js';
+
+const productRepository = new ProductRepository();
 
 const saveProduct = async (product) => {
-  await PRODUCTSDAO.save(product);
-  return product;
+  await productRepository.addProduct(product);
 }
 
 const getAllProducts = async () => {
-  return await PRODUCTSDAO.getAll();
+  const products = await productRepository.getAll();
+  return products;
 }
 
 const getProductsById = async (productId) => {
-  return await PRODUCTSDAO.getProductById(productId);
+  const product = await productRepository.getProductById(productId);
+  return product;
 }
 
 const updateProduct = async (productId, newProduct) => {
-  return await PRODUCTSDAO.updateProduct(productId, newProduct);
+  const product = await productRepository.updateProduct(productId, newProduct);
+  return product;
 }
 
 const deleteProduct = async (productId) => {
-  return await PRODUCTSDAO.deleteProduct(productId);
+  await productRepository.deleteProduct(productId);
+}
+
+const getPaginatedProducts = async (page, limit) => {
+  const products = await productRepository.getPaginatedProducts(page, limit);
+  return products;
 }
 
 export {
@@ -26,5 +35,6 @@ export {
   getAllProducts,
   getProductsById,
   updateProduct,
-  deleteProduct
+  deleteProduct,
+  getPaginatedProducts
 }

@@ -37,26 +37,11 @@ export default class ProductsDao {
         return await productsModel.findByIdAndDelete(id);
     }
 
-    async query(options) {
-        return await productsModel.find(options);
-    }
-
     async getPaginatedProducts(page, limit) {
         const options = {
             page,
             limit
         };
         return await productsModel.paginate({}, options);
-    }
-
-    async getProductsInCart(cartId) {
-        const cart = await cartsModel.findById(cartId);
-        return cart.products;
-    }
-
-    async addProductToCart(cartId, productId) {
-        const cart = await cartsModel.findById(cartId);
-        cart.products.push(productId);
-        return await cart.save();
     }
 }

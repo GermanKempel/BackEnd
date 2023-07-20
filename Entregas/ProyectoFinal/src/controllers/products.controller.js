@@ -1,63 +1,71 @@
-import {
-  saveProduct as saveProductService,
-  getAllProducts as getAllProductsService,
-  getProductsById as getProductsByIdService,
-  updateProduct as updateProductService,
-  deleteProduct as deleteProductService
-} from '../services/products.service.js';
-
-const saveProduct = async (req, res) => {
-  const product = req.body;
-  await saveProductService(product);
-  res.send(product)
-}
+import * as productsService from '../services/products.service.js';
 
 const getAllProducts = async (req, res) => {
-  const products = await getAllProductsService();
-  res.send(products);
+  try {
+    const products = await productsService.getAll();
+    res.send({ status: 'success', products });
+  } catch (error) {
+    res.status(500).send({ status: 'error', message: error.message });
+  }
 }
 
-const getProductsById = async (req, res) => {
-  const productId = Number(req.params.pid);
-  const product = await getProductsByIdService(productId);
-  if (!product) {
-    res.status(404).send({ status: 'error', message: 'Product not found' });
-    return;
+const getProductById = async (req, res) => {
+  try {
+    const productId = Number(req.params.id);
+    const product = await productsService.getProductsById(productId);
+    res.send({ status: 'success', product });
+  } catch (error) {
+    res.status(500).send({ status: 'error', message: error.message });
   }
-  res.send(product);
+}
+
+const saveProduct = async (req, res) => {
+  try {
+    const product = req.body;
+    await productsService.saveProduct(product);
+    res.send({ status: 'Product saved successfully' });
+  } catch (error) {
+    res.status(500).send({ status: 'error', message: error.message });
+  }
 }
 
 const updateProduct = async (req, res) => {
-  const productId = Number(req.params.pid);
-  const product = await getProductsByIdService(productId);
-  if (!product) {
-    res.status(404).send({ status: 'error', message: 'Product not found' });
-    return;
+  try {
+    const productId = Number(req.params.id);
+    const newProduct = req.body;
+    await productsService.updateProduct(productId, newProduct);
+    res.send({ status: 'Product updated successfully' });
+  } catch (error) {
+    res.status(500).send({ status: 'error', message: error.message });
   }
-  const newProduct = req.body;
-  if (!newProduct.title || !newProduct.description || !newProduct.code || !newProduct.price || !newProduct.stock || !newProduct.category) {
-    res.status(400).send({ status: 'error', message: 'Faltan datos' });
-    return;
-  }
-  const result = await updateProductService(productId, newProduct);
-  res.send({ status: 'ok', result });
 }
 
 const deleteProduct = async (req, res) => {
-  const productId = Number(req.params.pid);
-  const product = await getProductsByIdService(productId);
-  if (!product) {
-    res.status(404).send({ status: 'error', message: 'Product not found' });
-    return;
+  try {
+    const productId = Number(req.params.id);
+    await productsService.deleteProduct(productId);
+    res.send({ status: 'Product deleted successfully' });
+  } catch (error) {
+    res.status(500).send({ status: 'error', message: error.message });
   }
-  await deleteProductService(productId);
-  res.send({ status: 'ok' });
+}
+
+const getPaginatedProducts = async (req, res) => {
+  try {
+    const page = Number(req.query.page);
+    const limit = Number(req.query.limit);
+    const products = await productsService.getPaginatedProducts(page, limit);
+    res.send({ status: 'success', products });
+  } catch (error) {
+    res.status(500).send({ status: 'error', message: error.message });
+  }
 }
 
 export {
-  saveProduct,
   getAllProducts,
-  getProductsById,
+  getProductById,
+  saveProduct,
   updateProduct,
-  deleteProduct
+  deleteProduct,
+  getPaginatedProducts
 }

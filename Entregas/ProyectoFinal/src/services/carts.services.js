@@ -1,50 +1,72 @@
-import { CARTSDAO } from "../dao/index.js";
+import CartsRepository from "../repositories/carts.repository.js";
 
-const saveCart = async (cart) => {
-  await CARTSDAO.save(cart);
+const cartsRepository = new CartsRepository();
+
+const getAll = async () => {
+  const carts = await cartsRepository.getAll();
+  return carts;
+}
+
+const getById = async (cartId) => {
+  const cart = await cartsRepository.getById(cartId);
   return cart;
 }
 
-const getAllCarts = async () => {
-  return await CARTSDAO.getAll();
+const getByUserId = async (userId) => {
+  const cart = await cartsRepository.getByUserId(userId);
+  return cart;
 }
 
-const getCartById = async (cartId) => {
-  return await CARTSDAO.getById(cartId);
+const addProduct = async (cartId, productId) => {
+  const result = await cartsRepository.addProduct(cartId, productId);
+  return result;
 }
 
-const addProductToCart = async (cartId, productId) => {
-  return await CARTSDAO.addProductToCart(cartId, productId);
+const removeProduct = async (cartId, productId) => {
+  const result = await cartsRepository.removeProduct(cartId, productId);
+  return result;
 }
 
-const removeProductFromCart = async (cartId, productId) => {
-  return await CARTSDAO.removeProductFromCart(cartId, productId);
+const removeAllProducts = async (cartId) => {
+  const result = await cartsRepository.removeAllProducts(cartId);
+  return result;
 }
 
-const removeAllProductsFromCart = async (cartId) => {
-  return await CARTSDAO.removeAllProductsFromCart(cartId);
-}
-
-const updateCart = async (cartId, products) => {
-  return await CARTSDAO.updateCart(cartId, products);
+const updateCart = async (cart) => {
+  const result = await cartsRepository.updateCart(cart);
+  return result;
 }
 
 const updateProductQuantity = async (cartId, productId, quantity) => {
-  return await CARTSDAO.updateProductQuantity(cartId, productId, quantity);
+  const result = await cartsRepository.updateProductQuantity(cartId, productId, quantity);
+  return result;
 }
 
 const purchaseCart = async (cartId) => {
-  return await CARTSDAO.purchaseCart(cartId);
+  const result = await cartsRepository.purchaseCart(cartId);
+  return result;
+}
+
+const saveCart = async (cart) => {
+  const result = await cartsRepository.saveCart(cart);
+  return result;
+}
+
+const deleteCart = async (cartId) => {
+  const result = await cartsRepository.deleteCart(cartId);
+  return result;
 }
 
 export {
-  saveCart,
-  getAllCarts,
-  getCartById,
-  addProductToCart,
-  removeProductFromCart,
-  removeAllProductsFromCart,
+  getAll,
+  getById,
+  addProduct,
+  removeProduct,
+  removeAllProducts,
+  getByUserId,
   updateCart,
   updateProductQuantity,
-  purchaseCart
+  purchaseCart,
+  saveCart,
+  deleteCart
 }
