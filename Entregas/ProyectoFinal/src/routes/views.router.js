@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import ProductsManager from '../dao/dbManagers/products.dao.js';
 import CartsManager from '../dao/dbManagers/carts.dao.js';
+import { generateRandomProducts } from '../utils.js';
 
 const router = Router();
 
@@ -80,6 +81,11 @@ router.get('/', (req, res) => {
   res.render('profile', {
     user: req.session.user
   });
+});
+
+router.get('/mockingProducts', (req, res) => {
+  const products = generateRandomProducts();
+  res.send({ status: 'success', products });
 });
 
 export default router;

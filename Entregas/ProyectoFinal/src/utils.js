@@ -4,6 +4,26 @@ import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken';
 import passport from 'passport';
 import config from '../src/config/config.js'
+import faker from '@faker-js/faker'
+
+faker.locale = "es"
+
+export const generateRandomProducts = () => {
+  const products = [];
+  for (let i = 0; i < 100; i++) {
+    const product = {
+      title: faker.commerce.productName(),
+      description: faker.commerce.productDescription(),
+      code: faker.commerce.product(),
+      price: faker.commerce.price(),
+      thumbnail: faker.image.imageUrl(),
+      stock: faker.datatype.number(),
+      category: faker.commerce.department()
+    }
+    products.push(product);
+  }
+  return products;
+}
 
 const PRIVATE_KEY = config.private_key;
 
