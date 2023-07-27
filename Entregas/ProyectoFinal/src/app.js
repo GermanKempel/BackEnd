@@ -14,6 +14,7 @@ import passport from 'passport';
 import cookieParser from 'cookie-parser';
 import './dao/dbManagers/dbConfig.js'
 import config from './config/config.js';
+import { addLogger } from "./utils/loggers.js";
 
 const app = express();
 
@@ -53,6 +54,17 @@ app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
 app.use('/api/sessions', sessionsRouter);
 app.use('/api/users', usersRouter);
+
+app.use(addLogger);
+
+app.get('/loggerTest', (req, res) => {
+  req.logger.fatal('Prueba Fatal');
+  req.logger.error('Prueba Error');
+  req.logger.warning('Prueba Warning');
+  req.logger.info('Prueba Info');
+  req.logger.http('Prueba Http');
+  req.logger.debug('Prueba Debug');
+});
 
 const PORT = config.port;
 

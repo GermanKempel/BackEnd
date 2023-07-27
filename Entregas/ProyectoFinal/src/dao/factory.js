@@ -1,5 +1,10 @@
 import config from "../config/config.js";
 
+let Products;
+let Carts;
+let Users;
+let Tickets;
+
 const persistence = config.persistence;
 
 switch (persistence) {
@@ -30,5 +35,6 @@ switch (persistence) {
 export {
   Products,
   Carts,
-  Users
+  Users,
+  Tickets
 }

@@ -1,8 +1,9 @@
 import { Router } from 'express';
 import { saveProduct, getAllProducts, getProductById, updateProduct, deleteProduct } from '../controllers/products.controller.js';
 import { authorization } from '../utils.js';
+import toAsyncRouter from 'async-express-decorator'
 
-const router = Router();
+const router = toAsyncRouter(Router());
 
 router.post('/', saveProduct, authorization('admin'));
 router.get('/', getAllProducts);
