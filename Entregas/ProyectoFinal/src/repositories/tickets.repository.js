@@ -1,4 +1,4 @@
-import Tickets from "../dao/factory.js";
+import { Tickets } from "../dao/factory.js";
 
 export default class TicketsRepository {
   constructor() {

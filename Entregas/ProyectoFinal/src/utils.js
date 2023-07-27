@@ -4,9 +4,9 @@ import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken';
 import passport from 'passport';
 import config from '../src/config/config.js'
-import faker from '@faker-js/faker'
+import { faker } from '@faker-js/faker'
 
-faker.locale = "es"
+
 
 export const generateRandomProducts = () => {
   const products = [];

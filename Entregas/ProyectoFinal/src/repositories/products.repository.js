@@ -1,4 +1,4 @@
-import Products from "../dao/factory.js";
+import { Products } from "../dao/factory.js";
 
 export default class ProductsRepository {
   constructor() {
