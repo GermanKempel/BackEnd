@@ -15,8 +15,8 @@ export default class ProductsRepository {
     return newProduct;
   }
 
-  getProductById = async (id) => {
-    const product = await this.productsDao.getProductById(id);
+  getProductById = async (productId) => {
+    const product = await this.productsDao.getProductById(productId);
     return product;
   }
 
@@ -25,8 +25,8 @@ export default class ProductsRepository {
     return product;
   }
 
-  deleteProduct = async (id) => {
-    const product = await this.productsDao.deleteProduct(id);
+  deleteProduct = async (productId) => {
+    const product = await this.productsDao.deleteProduct(productId);
     return product;
   }
 

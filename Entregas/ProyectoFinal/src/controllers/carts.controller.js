@@ -12,7 +12,7 @@ const getAllCarts = async (req, res) => {
 
 const getCartById = async (req, res) => {
   try {
-    const cartId = Number(req.params.id);
+    const cartId = req.params.cid;
     const cart = await cartService.getById(cartId);
     res.send({ status: 'success', cart });
   } catch (error) {
@@ -22,11 +22,11 @@ const getCartById = async (req, res) => {
 
 const addProductToCart = async (req, res) => {
   try {
-    const cartId = Number(req.params.cid);
+    const cartId = req.params.cid;
     if (!cartId) {
       throw new Error('Cart not found');
     }
-    const productId = Number(req.params.pid);
+    const productId = req.params.pid;
     if (!productId) {
       throw new Error('Product not found');
     }
@@ -39,11 +39,11 @@ const addProductToCart = async (req, res) => {
 
 const removeProductFromCart = async (req, res) => {
   try {
-    const cartId = Number(req.params.cid);
+    const cartId = req.params.cid;
     if (!cartId) {
       throw new Error('Cart not found');
     }
-    const productId = Number(req.params.pid);
+    const productId = req.params.pid;
     if (!productId) {
       throw new Error('Product not found');
     }
@@ -56,7 +56,7 @@ const removeProductFromCart = async (req, res) => {
 
 const removeAllProductsFromCart = async (req, res) => {
   try {
-    const cartId = Number(req.params.cid);
+    const cartId = req.params.cid;
     if (!cartId) {
       throw new Error('Cart not found');
     }
@@ -69,7 +69,7 @@ const removeAllProductsFromCart = async (req, res) => {
 
 const updateCart = async (req, res) => {
   try {
-    const cartId = Number(req.params.cid);
+    const cartId = req.params.cid;
     const products = req.body.products;
     const result = await cartService.updateCart(cartId, products);
     res.send({ status: 'success', result });
@@ -80,8 +80,8 @@ const updateCart = async (req, res) => {
 
 const updateProductQuantity = async (req, res) => {
   try {
-    const cartId = Number(req.params.cid);
-    const productId = Number(req.params.pid);
+    const cartId = req.params.cid;
+    const productId = req.params.pid;
     const quantity = Number(req.body.quantity);
     const result = await cartService.updateProductQuantity(cartId, productId, quantity);
     res.send({ status: 'success', result });
@@ -92,7 +92,7 @@ const updateProductQuantity = async (req, res) => {
 
 const purchaseCart = async (req, res) => {
   try {
-    const cartId = Number(req.params.cid);
+    const cartId = req.params.cid;
     const result = await cartService.purchaseCart(cartId);
 
     const failedProducts = [];

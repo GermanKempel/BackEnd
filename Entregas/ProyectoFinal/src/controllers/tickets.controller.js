@@ -1,4 +1,5 @@
 import * as ticketService from "../services/tickets.service.js";
+import * as cartService from "../services/carts.service.js";
 
 const getAllTickets = async (req, res) => {
   try {
@@ -11,7 +12,7 @@ const getAllTickets = async (req, res) => {
 
 const getTicketById = async (req, res) => {
   try {
-    const ticketId = Number(req.params.id);
+    const ticketId = req.params.tid;
     const ticket = await ticketService.getById(ticketId);
     res.send({ status: "success", ticket });
   } catch (error) {
@@ -21,7 +22,7 @@ const getTicketById = async (req, res) => {
 
 const getTicketByUserId = async (req, res) => {
   try {
-    const userId = Number(req.params.uid);
+    const userId = req.params.uid;
     const ticket = await ticketService.getByUserId(userId);
     res.send({ status: "success", ticket });
   } catch (error) {
@@ -31,17 +32,17 @@ const getTicketByUserId = async (req, res) => {
 
 const addProductToTicket = async (req, res) => {
   try {
-    const ticketId = Number(req.params.tid);
+    const ticketId = req.params.tid;
     if (!ticketId) {
       throw new Error("Ticket not found");
     }
-    const productId = Number(req.params.pid);
+    const productId = req.params.pid;
     if (!productId) {
       throw new Error("Product not found");
     }
     const result = await ticketService.addProduct(ticketId, productId);
     if (result && result.failedProducts && result.failedProducts.length > 0) {
-      const cart = await Cart.findById(ticketId);
+      const cart = await cartService.findById(ticketId);
       const remainingItems = cart.items.filter(item => !result.failedProducts.includes(item.productId));
       cart.items = remainingItems;
       await cart.save();
@@ -54,11 +55,11 @@ const addProductToTicket = async (req, res) => {
 
 const removeProductFromTicket = async (req, res) => {
   try {
-    const ticketId = Number(req.params.tid);
+    const ticketId = req.params.tid;
     if (!ticketId) {
       throw new Error("Ticket not found");
     }
-    const productId = Number(req.params.pid);
+    const productId = req.params.pid;
     if (!productId) {
       throw new Error("Product not found");
     }
@@ -71,7 +72,7 @@ const removeProductFromTicket = async (req, res) => {
 
 const updateTicket = async (req, res) => {
   try {
-    const ticketId = Number(req.params.id);
+    const ticketId = req.params.tid;
     if (!ticketId) {
       throw new Error("Ticket not found");
     }
@@ -101,7 +102,7 @@ const saveTicket = async (req, res) => {
 
 const deleteTicket = async (req, res) => {
   try {
-    const ticketId = Number(req.params.id);
+    const ticketId = req.params.tid;
     if (!ticketId) {
       throw new Error("Ticket not found");
     }

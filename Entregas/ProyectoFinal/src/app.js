@@ -15,6 +15,7 @@ import cookieParser from 'cookie-parser';
 import './dao/dbManagers/dbConfig.js'
 import config from './config/config.js';
 import { addLogger } from "./utils/loggers.js";
+import errorHandler from "./middlewares/errors/index.js";
 
 const app = express();
 
@@ -55,6 +56,7 @@ app.use("/api/carts", cartsRouter);
 app.use('/api/sessions', sessionsRouter);
 app.use('/api/users', usersRouter);
 
+app.use(errorHandler);
 app.use(addLogger);
 
 app.get('/loggerTest', (req, res) => {

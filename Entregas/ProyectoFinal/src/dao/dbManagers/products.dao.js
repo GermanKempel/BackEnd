@@ -1,6 +1,4 @@
 import { productsModel } from './models/products.model.js';
-import { cartsModel } from './models/carts.model.js';
-
 export default class ProductsDao {
     constructor() {
         console.log('Working Products with DB');
@@ -14,8 +12,8 @@ export default class ProductsDao {
         return await productsModel.create(product);
     }
 
-    async getProductById(id) {
-        return await productsModel.findById(id);
+    async getProductById(productId) {
+        return await productsModel.findById(productId);
     }
 
     async updateProduct(id, title, description, price, thumbnail, code, stock, category) {
@@ -33,8 +31,8 @@ export default class ProductsDao {
         return await productToUpdate.save();
     }
 
-    async deleteProduct(id) {
-        return await productsModel.findByIdAndDelete(id);
+    async deleteProduct(productId) {
+        return await productsModel.findByIdAndDelete(productId);
     }
 
     async getPaginatedProducts(page, limit) {

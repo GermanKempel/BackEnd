@@ -11,7 +11,7 @@ const getAllProducts = async () => {
   return products;
 }
 
-const getProductsById = async (productId) => {
+const getProductById = async (productId) => {
   const product = await productRepository.getProductById(productId);
   return product;
 }
@@ -33,7 +33,7 @@ const getPaginatedProducts = async (page, limit) => {
 export {
   saveProduct,
   getAllProducts,
-  getProductsById,
+  getProductById,
   updateProduct,
   deleteProduct,
   getPaginatedProducts
