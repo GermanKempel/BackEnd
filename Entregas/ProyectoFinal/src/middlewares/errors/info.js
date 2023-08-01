@@ -29,7 +29,7 @@ export const generateProductNotValidErrorInfo = (productId) => {
 export const generateUserErrorInfo = (user) => {
   return `One or more properties were imcomplete or not valid.
   List of required properties:
-  * username: needs to be a string, received ${user.username}
+  * username: needs to be a string, received ${user.first_name}
   * password: needs to be a string, received ${user.password}
   * email: needs to be a string, received ${user.email}`
 }
