@@ -7,6 +7,7 @@ import UsersDto from "../dao/DTOs/users.dto.js";
 import CustomError from '../middlewares/errors/CustomError.js';
 import EErrors from '../middlewares/errors/enums.js';
 import { generateUserErrorInfo } from '../middlewares/errors/info.js';
+import logger from '../utils/loggers.js';
 
 const saveUser = async (req, res) => {
   try {
@@ -29,6 +30,7 @@ const getAllUsers = async (req, res) => {
     const users = await getAllUsersService();
     res.send({ status: "success", users });
   } catch (error) {
+    logger.info('Error trying to get all users', error);
     res.status(500).send({ status: "error", message: error.message });
   }
 };
@@ -39,6 +41,7 @@ const getUserByEmail = async (req, res) => {
     const user = await getUserByEmailService(email);
     res.send({ status: "success", user });
   } catch (error) {
+    logger.info('Error trying to get user by email', error);
     res.status(500).send({ status: "error", message: error.message });
   }
 };
@@ -50,6 +53,7 @@ const getUserDTO = async (req, res) => {
     const userDTO = new UsersDto(user);
     res.send({ status: "success", user: userDTO });
   } catch (error) {
+    logger.info('Error trying to get user by email', error);
     res.status(500).send({ status: "error", message: error.message });
   }
 };
