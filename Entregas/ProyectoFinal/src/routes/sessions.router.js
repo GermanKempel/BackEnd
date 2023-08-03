@@ -2,6 +2,8 @@ import { Router } from 'express';
 import passport from 'passport';
 import Users from '../dao/dbManagers/users.dao.js';
 import { authorization, generateToken, passportCall, isValidPassword } from '../utils.js';
+import { loginNotification } from '../utils/custom-html.js';
+import { sendMail } from '../services/mail.services.js';
 
 
 const usersManager = new Users();
@@ -41,6 +43,15 @@ router.post('/login', passport.authenticate('jwt', { failureRedirect: 'fail_logi
         return res.status(400).send({ status: 'error', error: 'Invalid credentials' });
     }
     const accessToken = generateToken(user)
+
+    const mail = {
+        to: user.email,
+        subject: 'Login',
+        html: loginNotification
+    }
+
+    await sendMail(mail);
+
     res.cookie('coderCookieToken', accessToken, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
     res.send({ status: 'success', message: 'User logged in' });
 });

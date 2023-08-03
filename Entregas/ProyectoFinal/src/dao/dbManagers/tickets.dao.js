@@ -31,11 +31,11 @@ export default class TicketsDao {
   }
 
   async updateTicket(ticketId, products) {
-    return ticketModel.findByIdAndUpdate(ticketId, { products });
+    return ticketModel.findByIdAndUpdate(ticketId, { $set: { products } });
   }
 
-  async saveTicket(ticket) {
-    return ticket.save();
+  async saveTicket(ticketId) {
+    return ticketModel.create(ticketId);
   }
 
   async deleteTicket(ticketId) {

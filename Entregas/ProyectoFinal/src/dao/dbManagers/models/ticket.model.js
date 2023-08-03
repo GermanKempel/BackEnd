@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const ticketCollection = 'ticketModel';
+const ticketCollection = 'tickets';
 
 const ticketSchema = new mongoose.Schema({
   id: Number,

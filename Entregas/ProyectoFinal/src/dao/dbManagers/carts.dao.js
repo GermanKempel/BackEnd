@@ -5,11 +5,6 @@ export default class CartsDao {
     console.log('Working Carts with DB');
   }
 
-  async addNewCart(cartData) {
-    const cart = new cartsModel(cartData);
-    return cart.save();
-  }
-
   async getAll() {
     return cartsModel.find().populate('products');
   }
@@ -46,8 +41,8 @@ export default class CartsDao {
     return cartsModel.findByIdAndUpdate(cartId, { $set: { products: [] } });
   }
 
-  async saveCart(cart) {
-    return cart.save();
+  async saveCart(cartId) {
+    return cartsModel.create(cartId);
   }
 
   async deleteCart(cartId) {

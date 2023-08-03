@@ -39,7 +39,7 @@ if (ENVIROMENT === 'development') {
         ),
       }),
       new winston.transports.File({
-        filename: 'logs/errors.log',
+        filename: 'src/logs/errors.log',
         level: 'error',
       }),],
   });
@@ -56,7 +56,7 @@ if (ENVIROMENT === 'development') {
           ),
         }),
         new winston.transports.File({
-          filename: 'logs/errors.log',
+          filename: 'src/logs/errors.log',
           level: 'error',
         }),],
     });

@@ -19,16 +19,31 @@ const getByUserId = async (userId) => {
 
 const addProduct = async (cartId, productId) => {
   const result = await cartsRepository.addProduct(cartId, productId);
+  if (!cartId) {
+    throw new Error('Cart not found');
+  }
+  if (!productId) {
+    throw new Error('Product not found');
+  }
   return result;
 }
 
 const removeProduct = async (cartId, productId) => {
   const result = await cartsRepository.removeProduct(cartId, productId);
+  if (!cartId) {
+    throw new Error('Cart not found');
+  }
+  if (!productId) {
+    throw new Error('Product not found');
+  }
   return result;
 }
 
 const removeAllProducts = async (cartId) => {
   const result = await cartsRepository.removeAllProducts(cartId);
+  if (!cartId) {
+    throw new Error('Cart not found');
+  }
   return result;
 }
 
@@ -44,6 +59,7 @@ const updateProductQuantity = async (cartId, productId, quantity) => {
 
 const purchaseCart = async (cartId) => {
   const result = await cartsRepository.purchaseCart(cartId);
+
   return result;
 }
 
