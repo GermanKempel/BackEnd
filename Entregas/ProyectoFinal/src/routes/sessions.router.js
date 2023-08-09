@@ -1,12 +1,9 @@
 import { Router } from 'express';
 import passport from 'passport';
 import Users from '../dao/dbManagers/users.dao.js';
-import { authorization, generateToken, passportCall, isValidPassword } from '../utils.js';
+import { createHash, authorization, generateToken, passportCall, isValidPassword } from '../utils.js';
 import { resetPasswordNotification } from '../utils/custom-html.js';
 import { sendMail } from '../services/mail.services.js';
-import { createHash, isValidPassword } from '../utils.js';
-
-
 
 const usersManager = new Users();
 
