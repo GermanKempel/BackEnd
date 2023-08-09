@@ -16,8 +16,24 @@ import './dao/dbManagers/dbConfig.js'
 import config from './config/config.js';
 import { addLogger } from "./utils/loggers.js";
 import errorHandler from "./middlewares/errors/index.js";
+import swaggerJsDoc from 'swagger-jsdoc';
+import swaggerUiExpress from 'swagger-ui-express';
 
 const app = express();
+
+const swaggerOptions = {
+  definition: {
+    openapi: '3.0.1',
+    info: {
+      title: 'Documentación de la API',
+      description: 'Esta es la documentación de la API del proyecto final de Coderhouse',
+    }
+  },
+  apis: [`${__dirname}/docs/**/*.yaml`]
+};
+
+const specs = swaggerJsDoc(swaggerOptions);
+app.use('/api/docs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
 
 app.use(express.static(`${__dirname}/public`));
 app.use(express.json());

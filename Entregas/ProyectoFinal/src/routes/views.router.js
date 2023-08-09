@@ -88,4 +88,8 @@ router.get('/mockingProducts', (req, res) => {
   res.send({ status: 'success', products });
 });
 
+router.get('/reset-pass', (req, res) => {
+  res.render('resetPass');
+});
+
 export default router;

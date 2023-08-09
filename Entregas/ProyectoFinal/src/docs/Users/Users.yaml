@@ -1,0 +1,71 @@
+paths:
+  /api/users:
+    get:
+      tags:
+        - Users
+      summary: Get all users
+      description: Get all users
+      operationId: getAllUsers
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Users"
+  /api/users/:email:
+    get:
+      tags:
+        - Users
+      summary: Get user by email
+      description: Get user by email
+      operationId: getUserByEmail
+      parameters:
+        - name: email
+          in: path
+          description: Email del usuario
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Users"
+        "404":
+          description: Not Found
+components:
+  schemas:
+    Users:
+      type: object
+      properties:
+        _id:
+          type: ObjectId
+          description: Id autogenerado por MongoDB.
+        first_name:
+          type: string
+          description: Nombre del usuario.
+        last_name:
+          type: string
+          description: Apellido del usuario.
+        email:
+          type: string
+          description: Correo del usuario.
+        password:
+          type: string
+          description: Contraseña del usuario.
+        role:
+          type: string
+          description: Rol del usuario.
+
+        example:
+          _id: ObjectId("5f9d4a3b7e3d2b1b7c9d4a3b")
+          first_name: Juan
+          last_name: Perez
+          email: jp@mail.com
+          password: 12431"%$&246542%
+          role: admin

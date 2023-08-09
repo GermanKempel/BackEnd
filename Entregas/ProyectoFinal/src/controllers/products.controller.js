@@ -1,3 +1,4 @@
+import userModel from '../dao/dbManagers/models/users.model.js';
 import CustomError from '../middlewares/errors/CustomError.js';
 import EErrors from '../middlewares/errors/enums.js';
 import { generateProductErrorInfo } from '../middlewares/errors/info.js';
@@ -56,10 +57,18 @@ const saveProduct = async (req, res) => {
       code: EErrors.INVALID_TYPE_ERROR
     });
   }
-  await productsService.saveProduct(product);
-  res.send({ status: 'Product saved successfully' });
+  const currentUser = await userModel.findById(req.user._id);
+  const isUserPremium = currentUser.role === 'premium';
+  const owner = isUserPremium ? currentUser.email : 'admin';
+  try {
+    const product = req.body;
+    await productsService.saveProduct(product, owner);
+    res.send({ status: 'Product saved successfully' });
+  } catch (error) {
+    logger.info('Error trying to save product', error);
+    res.status(500).send({ status: 'error', message: error.message });
+  }
 }
-
 
 
 const updateProduct = async (req, res) => {
@@ -75,15 +84,30 @@ const updateProduct = async (req, res) => {
 }
 
 const deleteProduct = async (req, res) => {
+  const productId = req.params.pid;
+
   try {
-    const productId = req.params.pid;
-    await productsService.deleteProduct(productId);
-    res.send({ status: 'Product deleted successfully' });
+    const product = await productsService.getProductById(productId);
+
+    if (!product) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+    const currentUser = await userModel.findById(req.user._id);
+
+    const isAdmin = currentUser.role === 'admin';
+    const isOwner = product.owner === currentUser._id.toString();
+
+    if (isAdmin || isOwner) {
+      await product.remove();
+      return res.json({ status: 'Product deleted successfully' });
+    } else {
+      return res.status(403).json({ error: 'Not authorized to delete this product' });
+    }
   } catch (error) {
     logger.info('Error trying to delete product', error);
-    res.status(500).send({ status: 'error', message: error.message });
+    res.status(500).json({ error: 'Error trying to delete product' });
   }
-}
+};
 
 const getPaginatedProducts = async (req, res) => {
   try {

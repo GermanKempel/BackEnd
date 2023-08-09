@@ -1,3 +1,5 @@
+import { transporter } from '../utils.js'
+
 export const sendMail = async (email) => {
   await transporter.sendMail({
     from: 'eCommerce GK',

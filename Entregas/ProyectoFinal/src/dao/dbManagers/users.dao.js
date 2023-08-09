@@ -19,4 +19,10 @@ export default class UsersDao {
     const result = await userModel.create(user);
     return result;
   }
+
+  update = async (user) => {
+    const result = await userModel.updateOne({ _id: user._id }, user);
+    return result;
+  }
 }
+

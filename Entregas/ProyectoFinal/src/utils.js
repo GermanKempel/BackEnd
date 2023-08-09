@@ -7,7 +7,7 @@ import config from '../src/config/config.js'
 import { faker } from '@faker-js/faker'
 import nodemailer from 'nodemailer'
 
-const transporter = nodemailer.createTransport({
+export const transporter = nodemailer.createTransport({
   service: 'gmail',
   port: 587,
   auth: {

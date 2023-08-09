@@ -2,8 +2,10 @@ import { Router } from 'express';
 import passport from 'passport';
 import Users from '../dao/dbManagers/users.dao.js';
 import { authorization, generateToken, passportCall, isValidPassword } from '../utils.js';
-import { loginNotification } from '../utils/custom-html.js';
+import { resetPasswordNotification } from '../utils/custom-html.js';
 import { sendMail } from '../services/mail.services.js';
+import { createHash, isValidPassword } from '../utils.js';
+
 
 
 const usersManager = new Users();
@@ -44,14 +46,6 @@ router.post('/login', passport.authenticate('jwt', { failureRedirect: 'fail_logi
     }
     const accessToken = generateToken(user)
 
-    const mail = {
-        to: user.email,
-        subject: 'Login',
-        html: loginNotification
-    }
-
-    await sendMail(mail);
-
     res.cookie('coderCookieToken', accessToken, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
     res.send({ status: 'success', message: 'User logged in' });
 });
@@ -86,6 +80,48 @@ router.get('/current', passport.authenticate('jwt', { session: false }), (req, r
 
 router.get('/current-custom', passportCall('jwt'), authorization('admin'), (req, res) => {
     res.send({ status: 'success', payload: req.user });
+});
+
+router.post('/reset-password', async (req, res) => {
+    const { email } = req.body;
+    const user = await usersManager.getByEmail(email);
+    if (!user) return res.status(400).send({ status: 'error', error: 'Invalid credentials' });
+    if (user) {
+        const token = generateToken(user);
+        const expirationTime = Date.now() + 3600000;
+        user.reset_token = token;
+        user.reset_token_expiration = expirationTime;
+        await usersManager.update(user);
+
+        await sendMail({
+            to: user.email,
+            subject: 'Reset Password',
+            html: resetPasswordNotification(user.first_name, token)
+        });
+
+        return res.send({ status: 'success', email: user.email, name: user.first_name, token });
+
+    }
+});
+
+router.get('/reset-password', async (req, res) => {
+    res.render('newPassForm');
+});
+
+router.post('/update-password', async (req, res) => {
+    const { email, token, password } = req.body;
+    const user = await usersManager.getByEmail(email);
+    if (!user) return res.status(400).send({ status: 'error', error: 'Invalid credentials' });
+    if (user) {
+        if (user.reset_token !== token) return res.status(400).send({ status: 'error', error: 'Invalid credentials' });
+        if (user.reset_token_expiration < Date.now()) return res.status(400).send({ status: 'error', error: 'Invalid credentials' });
+        const hashedPassword = createHash(password);
+        user.password = hashedPassword;
+        user.reset_token = null;
+        user.reset_token_expiration = null;
+        await usersManager.update(user);
+        return res.send({ status: 'success', message: 'Password updated' });
+    }
 });
 
 export default router;
