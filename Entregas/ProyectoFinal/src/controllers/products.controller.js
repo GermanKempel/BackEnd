@@ -111,13 +111,14 @@ const deleteProduct = async (req, res) => {
 
 const getPaginatedProducts = async (req, res) => {
   try {
-    const page = Number(req.query.page);
-    const limit = Number(req.query.limit);
+    const { page = 1, limit = 10 } = req.query;
+
     const products = await productsService.getPaginatedProducts(page, limit);
-    res.send({ status: 'success', products });
+
+    res.render('products', { products });
   } catch (error) {
-    logger.info('Error trying to get paginated products', error);
-    res.status(500).send({ status: 'error', message: error.message });
+    console.error('Error trying to get paginated products', error);
+    res.status(500).send('Internal Server Error');
   }
 }
 

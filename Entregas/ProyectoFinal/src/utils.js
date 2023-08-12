@@ -7,12 +7,15 @@ import config from '../src/config/config.js'
 import { faker } from '@faker-js/faker'
 import nodemailer from 'nodemailer'
 
+const userMail = config.userNodeMailer;
+const passMail = config.passNodeMailer;
+
 export const transporter = nodemailer.createTransport({
   service: 'gmail',
   port: 587,
   auth: {
-    user: '',
-    pass: ''
+    user: userMail,
+    pass: passMail
   }
 })
 

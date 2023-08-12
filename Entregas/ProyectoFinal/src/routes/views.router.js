@@ -1,12 +1,14 @@
 import { Router } from 'express';
-import ProductsManager from '../dao/dbManagers/products.dao.js';
-import CartsManager from '../dao/dbManagers/carts.dao.js';
+// import ProductsManager from '../dao/dbManagers/products.dao.js';
+// import CartsManager from '../dao/dbManagers/carts.dao.js';
 import { generateRandomProducts } from '../utils.js';
+import { getPaginatedProducts } from '../controllers/products.controller.js';
+
 
 const router = Router();
 
-const productManager = new ProductsManager();
-const cartManager = new CartsManager();
+// const productManager = new ProductsManager();
+// const cartManager = new CartsManager();
 
 // router.get('/', async (req, res) => {
 //   res.render('home', { products: await productManager.getAll() });
@@ -16,15 +18,7 @@ router.get('/realtimeproducts', async (req, res) => {
   res.render('realtimeproducts', { products: await productManager.getAll() });
 });
 
-router.get('/products', async (req, res) => {
-  // Obtener parámetros de paginación
-  const { page = 1, limit = 10 } = req.query;
-
-  // Obtener productos paginados
-  const products = await productManager.getPaginatedProducts({}, { page, limit });
-
-  res.render('products', { products });
-});
+router.get('/products', getPaginatedProducts)
 
 router.get('/products/:pid', async (req, res) => {
   const productId = req.params.pid;

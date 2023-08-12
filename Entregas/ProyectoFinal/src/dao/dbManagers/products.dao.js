@@ -1,3 +1,4 @@
+import { parse } from 'dotenv';
 import { productsModel } from './models/products.model.js';
 export default class ProductsDao {
     constructor() {
@@ -37,8 +38,8 @@ export default class ProductsDao {
 
     async getPaginatedProducts(page, limit) {
         const options = {
-            page,
-            limit
+            page: parseInt(page),
+            limit: parseInt(limit)
         };
         return await productsModel.paginate({}, options);
     }

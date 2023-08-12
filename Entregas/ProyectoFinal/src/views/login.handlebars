@@ -1,13 +1,9 @@
 <div>
   <h1>Login</h1>
   <form id="loginForm">
-    <label>Email</label>
-    <input name="email" />
-    <br />
-    <label>Contraseña</label>
-    <input type="password" />
-    <input type="submit" />
-  </form>
+    <input type="email" name="email" placeholder="Email" required>
+    <input type="password" name="password" placeholder="Password" required>
+    <button type="submit">Ingresar</button>
   <p>¿Olvidaste tu contraseña?
     <a href="/reset-pass">Hace click aquí</a></p>
   <a href="/api/sessions/github"><button>Ingresar con github</button></a>

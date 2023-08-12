@@ -1,46 +1,27 @@
-const form = document.getElementById('loginForm');
+const formLogin = document.getElementById("loginForm");
 
-form.addEventListener('submit', e => {
-    e.preventDefault();
-    const data = new FormData(form);
-    const obj = {};
-    data.forEach((value, key) => obj[key] = value);
-    fetch('/api/sessions/login', {
+formLogin.addEventListener('submit', async e => {
+    e.preventDefault()
+
+    const datos = {
+        email: formLogin[0].value,
+        password: formLogin[1].value,
+    }
+
+    const respuesta = await fetch('/api/sessions/login', {
         method: 'POST',
-        body: JSON.stringify(obj),
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
-        }
-    }).then(result => {
-        if (result.status === 200) {
-            window.location.replace('/');
-        }
-    })
+        },
+        body: JSON.stringify(datos)
+    });
+
+    const json = await respuesta.json();
+
+    if (json.status === 'success') {
+        window.location.replace('/products');
+    } else {
+        alert(json.error);
+    }
 })
-
-// const formLogin = document.getElementById("formLogin");
-// formLogin.addEventListener('submit', async e => {
-
-//     e.preventDefault()
-
-//     const datos = {
-//         email: formLogin[0].value,
-//         password: formLogin[1].value,
-//     }
-
-//     const respuesta = await fetch('/api/auth/login', {
-//         method: 'POST',
-//         headers: {
-//             'Accept': 'application/json',
-//             'Content-Type': 'application/json'
-//         },
-//         body: JSON.stringify(datos)
-//     });
-
-//     if (respuesta.status === 200) {
-//         console.log(document.cookie);
-//     } else {
-//         location.href = '/login'
-//     }
-// })

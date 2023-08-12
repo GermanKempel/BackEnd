@@ -1,20 +1,30 @@
 const form = document.getElementById('registerForm');
 
-form.addEventListener('submit', e => {
+form.addEventListener('submit', async e => {
     e.preventDefault();
-    const data = new FormData(form);
-    const obj = {};
-    data.forEach((value, key) => obj[key] = value);
-    fetch('/api/sessions/register', {
+
+    const datos = {
+        first_name: form[0].value,
+        last_name: form[1].value,
+        email: form[2].value,
+        age: form[3].value,
+        password: form[4].value,
+    }
+
+    const respuesta = await fetch('/api/sessions/register', {
         method: 'POST',
-        body: JSON.stringify(obj),
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
-        }
-    }).then(result => {
-        if (result.status === 200) {
-            window.location.replace('/');
-        }
+        },
+        body: JSON.stringify(datos)
     });
+
+    const json = await respuesta.json();
+
+    if (json.status === 'success') {
+        window.location.replace('/login');
+    } else {
+        alert(json.error);
+    }
 })

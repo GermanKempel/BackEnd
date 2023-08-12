@@ -21,15 +21,13 @@ const Github_clientSecret = config.Github_clientSecret;
 const initializePassport = () => {
 
   passport.use('jwt', new JWTStrategy({
-    jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor]),
-    secretOrKey: private_key
-  }, async (jwt_payload, done) => {
+    secretOrKey: private_key,
+    jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken()
+  }, async (token, done) => {
     try {
-      // if(!jwt_payload.jkhasdfakshdf) return done(null, false, { messages: 'User not found' })
-      return done(null, jwt_payload.user);
-      //req.user = {}
+      return done(null, token.user);
     } catch (error) {
-      return done(error);
+      done(error);
     }
   }))
 
@@ -38,37 +36,40 @@ const initializePassport = () => {
     usernameField: 'email'
   }, async (req, username, password, done) => {
 
-    const hashedPassword = createHash(password);
+    const { first_name, last_name, age } = req.body;
+
+    if (!first_name || !last_name || !age || !username || !password)
+      return done(null, false, { message: 'Missing fields' });
+
+    const user = await usersManager.getByEmail(username);
+
+    if (user) return done(null, false, { message: 'User already exists' });
+
+    const hash = createHash(password);
 
     const newUser = {
-      ...req.body
+      ...req.body,
     };
 
-    newUser.password = hashedPassword;
+    newUser.password = hash;
 
-    const result = await usersManager.save(newUser);
+    const createdUser = await usersManager.save(newUser);
 
-    return done(null, result)
+    return done(null, createdUser);
 
   }));
 
   passport.use('login', new LocalStrategy({
     usernameField: 'email'
   }, async (username, password, done) => {
-    try {
-      const user = await userModel.findOne({ email: username });
 
-      if (!user) {
-        return done(null, false)
-      }
+    const user = await usersManager.getByEmail(username);
 
-      if (!isValidPassword(user, password)) return done(null, false)
+    if (!user) return done(null, false, { message: 'Invalid credentials' });
 
-      return done(null, user)
-      //req.user
-
-    } catch (error) {
-      return done(`Error al obtener el usario: ${error}`)
+    if (user) {
+      if (!isValidPassword(user, password)) return done(null, false, { message: 'Invalid credentials' });
+      return done(null, user);
     }
   }));
 
@@ -110,12 +111,12 @@ const initializePassport = () => {
 };
 
 
-const cookieExtractor = req => {
-  let token = null;
-  if (req && req.cookies) {
-    token = req.cookies['coderCookieToken'];
-  }
-  return token;
-}
+// const cookieExtractor = req => {
+//   let token = null;
+//   if (req && req.cookies) {
+//     token = req.cookies['coderCookieToken'];
+//   }
+//   return token;
+// }
 
 export default initializePassport;

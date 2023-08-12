@@ -54,14 +54,14 @@ initializePassport();
 app.use(passport.initialize());
 app.use(passport.session());
 
-// app.engine('handlebars', handlebars.engine({
-//   runtimeOptions: {
-//     allowProtoPropertiesByDefault: true,
-//     allowProtoMethodsByDefault: true
-//   }
-// }));
+app.engine('handlebars', handlebars.engine({
+  runtimeOptions: {
+    allowProtoPropertiesByDefault: true,
+    allowProtoMethodsByDefault: true
+  }
+}));
 
-app.engine('handlebars', handlebars.engine())
+// app.engine('handlebars', handlebars.engine())
 
 app.set('views', `${__dirname}/views`);
 app.set('view engine', 'handlebars');

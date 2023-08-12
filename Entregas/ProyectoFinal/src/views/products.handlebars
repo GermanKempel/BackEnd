@@ -1,21 +1,17 @@
 <html>
   <head>
-    <title>Lista de productos</title>
+    <title>Products</title>
   </head>
   <body>
-    <h1>Lista de productos</h1>
+    <h1>Product List</h1>
     <ul>
-      {{#each products}}
-        <br />
-        <li>Title: {{this.title}}</li>
-        <li>Description: {{this.description}}</li>
-        <li>Code: {{this.code}}</li>
-        <li>Price: {{this.price}}</li>
-        <li>Status: {{this.status}}</li>
-        <li>Stock: {{this.stock}}</li>
-        <li>Category: {{this.category}}</li>
-        <li>Id: {{this.id}}</li>
-        <br />
+      {{#each products.docs}}
+        <li>
+          <h2>{{title}}</h2>
+          <p>{{description}}</p>
+          <p>Price: ${{price}}</p>
+          <p>Stock: {{stock}}</p>
+        </li>
       {{/each}}
     </ul>
   </body>

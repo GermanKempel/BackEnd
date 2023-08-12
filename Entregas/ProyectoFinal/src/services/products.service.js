@@ -26,8 +26,7 @@ const deleteProduct = async (productId) => {
 }
 
 const getPaginatedProducts = async (page, limit) => {
-  const products = await productRepository.getPaginatedProducts(page, limit);
-  return products;
+  return await productRepository.getPaginatedProducts(page, limit);
 }
 
 export {

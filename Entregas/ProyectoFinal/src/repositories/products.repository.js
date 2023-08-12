@@ -31,7 +31,6 @@ export default class ProductsRepository {
   }
 
   getPaginatedProducts = async (page, limit) => {
-    const products = await this.productsDao.getPaginatedProducts(page, limit);
-    return products;
+    return await this.productsDao.getPaginatedProducts(page, limit);
   }
 }
