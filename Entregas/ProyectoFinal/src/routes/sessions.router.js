@@ -1,10 +1,13 @@
 import { Router } from 'express';
 import passport from 'passport';
 import Users from '../dao/dbManagers/users.dao.js';
-import { createHash, authorization, generateToken, passportCall, isValidPassword } from '../utils.js';
+import { createHash, authorization, authToken, generateToken, passportCall, isValidPassword } from '../utils.js';
 import { resetPasswordNotification } from '../utils/custom-html.js';
 import { sendMail } from '../services/mail.services.js';
+import jwt from 'jsonwebtoken';
+import config from '../config/config.js';
 
+const PRIVATE_KEY = config.private_key;
 const usersManager = new Users();
 
 const router = Router();
@@ -71,41 +74,71 @@ router.post('/reset-password', async (req, res) => {
     const user = await usersManager.getByEmail(email);
     if (!user) return res.status(400).send({ status: 'error', error: 'Invalid credentials' });
     if (user) {
-        const token = generateToken(user);
-        const expirationTime = Date.now() + 3600000;
-        user.reset_token = token;
-        user.reset_token_expiration = expirationTime;
+        const token = jwt.sign({ user }, PRIVATE_KEY, { expiresIn: '1h' });
         await usersManager.update(user);
+
+        const resetLink = `http://localhost:8080/api/sessions/reset-password/${token}`;
+
+        const emailContent = resetPasswordNotification(resetLink)
 
         await sendMail({
             to: user.email,
             subject: 'Reset Password',
-            html: resetPasswordNotification(user.first_name, token)
+            html: emailContent
         });
 
-        return res.send({ status: 'success', email: user.email, name: user.first_name, token });
+        return res.send({ status: 'success', message: 'Email sent', token });
 
     }
 });
 
-router.get('/reset-password', async (req, res) => {
-    res.render('newPassForm');
+
+router.get('/reset-password/:token', async (req, res) => {
+    const { token } = req.params;
+
+    try {
+        jwt.verify(token, PRIVATE_KEY);
+        const decodedToken = jwt.decode(token);
+        const user = await usersManager.getById(decodedToken.user._id);
+
+        if (!user) {
+            return res.status(400).send({ status: 'error', error: 'User not found' });
+        }
+
+        // Render a view where the user can enter a new password
+        return res.render('newPass');
+    } catch (error) {
+        // Token verification failed or expired
+        return res.redirect('/reset-pass'); // Redirect to a page to generate a new reset link
+    }
 });
 
 router.post('/update-password', async (req, res) => {
-    const { email, token, password } = req.body;
-    const user = await usersManager.getByEmail(email);
-    if (!user) return res.status(400).send({ status: 'error', error: 'Invalid credentials' });
-    if (user) {
-        if (user.reset_token !== token) return res.status(400).send({ status: 'error', error: 'Invalid credentials' });
-        if (user.reset_token_expiration < Date.now()) return res.status(400).send({ status: 'error', error: 'Invalid credentials' });
+
+    const { password, token } = req.body;
+
+    try {
+        jwt.verify(token, PRIVATE_KEY);
+        const decodedToken = jwt.decode(token);
+        const user = await usersManager.getById(decodedToken.user._id);
+
+        if (!user) {
+            return res.status(400).send({ status: 'error', error: 'User not found' });
+        }
+
         const hashedPassword = createHash(password);
+
         user.password = hashedPassword;
-        user.reset_token = null;
-        user.reset_token_expiration = null;
+
         await usersManager.update(user);
+
         return res.send({ status: 'success', message: 'Password updated' });
+
+    } catch (error) {
+        // Token verification failed or expired
+        return res.redirect('/reset-pass'); // Redirect to a page to generate a new reset link
     }
+
 });
 
 export default router;

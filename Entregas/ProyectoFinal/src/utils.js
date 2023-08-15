@@ -7,6 +7,7 @@ import config from '../src/config/config.js'
 import { faker } from '@faker-js/faker'
 import nodemailer from 'nodemailer'
 
+process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
 const userMail = config.userNodeMailer;
 const passMail = config.passNodeMailer;
 

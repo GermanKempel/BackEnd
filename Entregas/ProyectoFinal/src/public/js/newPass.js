@@ -1,34 +1,31 @@
 const form = document.getElementById("newPassForm");
 
-form.addEventListener("submit", async function (e) {
+form.addEventListener("submit", async e => {
   e.preventDefault();
 
-  const formData = new FormData(form);
-  const newPassword = formData.get("password");
-  const confirmPassword = formData.get("password2");
+  const password = form[0].value;
+  const confirmPassword = form[1].value;
 
-  if (newPassword !== confirmPassword) {
+  if (password !== confirmPassword) {
     alert("Passwords do not match");
     return;
   }
 
-  if (newPassword === previousPassword) {
-    alert("New password cannot be the same as the previous password");
-    return;
-  }
-
-  const response = await fetch("/api/sessiosns/update-password", {
+  const response = await fetch("/api/sessions/update-password", {
     method: "POST",
-    body: JSON.stringify({ newPassword }),
     headers: {
       "Content-Type": "application/json",
+
     },
+    body: JSON.stringify({ password, token: window.location.pathname.split("/")[4] }),
+
   });
 
   const result = await response.json();
+
   if (result.status === "success") {
-    alert("Password updated successfully");
+    window.location.replace("/login");
   } else {
-    alert("Failed to update password");
+    alert(result.error);
   }
 });

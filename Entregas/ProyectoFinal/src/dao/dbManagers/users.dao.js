@@ -10,6 +10,11 @@ export default class UsersDao {
     return users.map(user => user.toObject());
   }
 
+  getById = async (id) => {
+    const user = await userModel.findById(id).lean();
+    return user;
+  }
+
   getByEmail = async (email) => {
     const user = await userModel.findOne({ email }).lean();
     return user;

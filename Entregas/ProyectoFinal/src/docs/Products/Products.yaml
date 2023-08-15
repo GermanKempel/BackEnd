@@ -1,0 +1,159 @@
+paths:
+  /api/products:
+    get:
+      tags:
+        - Products
+      summary: Get all products
+      description: Get all products
+      operationId: getAllProducts
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Products"
+    post:
+      tags:
+        - Products
+      summary: Add new product
+      description: Add new product
+      operationId: addNewProduct
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Products"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Products"
+        "400":
+          description: Bad Request
+/api/products/:pid:
+  get:
+    tags:
+      - Products
+    summary: Get product by id
+    description: Get product by id
+    operationId: getProductById
+    parameters:
+      - name: pid
+        in: path
+        description: Id del producto
+        required: true
+        schema:
+          type: string
+    responses:
+      "200":
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Products"
+      "404":
+        description: Not Found
+  put:
+    tags:
+      - Products
+    summary: Update product by id
+    description: Update product by id
+    operationId: updateProductById
+    parameters:
+      - name: pid
+        in: path
+        description: Id del producto
+        required: true
+        schema:
+          type: string
+    requestBody:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Products"
+    responses:
+      "200":
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Products"
+      "404":
+        description: Not Found
+  delete:
+    tags:
+      - Products
+    summary: Delete product by id
+    description: Delete product by id
+    operationId: deleteProductById
+    parameters:
+      - name: pid
+        in: path
+        description: Id del producto
+        required: true
+        schema:
+          type: string
+    responses:
+      "200":
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Products"
+      "404":
+        description: Not Found
+components:
+  schemas:
+    Products:
+      type: object
+      properties:
+        _id:
+          type: ObjectId
+          description: Id autogenerado por MongoDB.
+        name:
+          type: string
+          description: Nombre del producto.
+        description:
+          type: string
+          description: Descripción del producto.
+        price:
+          type: number
+          description: Precio del producto.
+        stock:
+          type: number
+          description: Stock del producto.
+        image:
+          type: string
+          description: Imagen del producto.
+        category:
+          type: string
+          description: Categoría del producto.
+        brand:
+          type: string
+          description: Marca del producto.
+        createdAt:
+          type: string
+          description: Fecha de creación del producto.
+        updatedAt:
+          type: string
+          description: Fecha de actualización del producto.
+        __v:
+          type: number
+          description: Versión del producto.
+example:
+  _id: 60f0c9b0e6b3a2a7b8b3b0a1
+  name: "Producto 1"
+  description: "Descripción del producto 1"
+  price: 100
+  stock: 10
+  image: "https://picsum.photos/200/300"
+  category: "Categoría 1"
+  brand: "Marca 1"
+  createdAt: "2021-07-16T00:00:00.000Z"
+  updatedAt: "2021-07-16T00:00:00.000Z"
+  __v: 0

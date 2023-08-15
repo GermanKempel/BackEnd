@@ -1,4 +1,5 @@
-export const resetPasswordNotification = `<!DOCTYPE html>
+export const resetPasswordNotification = (resetLink) =>
+    `<!DOCTYPE html>
   <html lang="en">
   <head>
       <meta charset="UTF-8">
@@ -44,7 +45,8 @@ export const resetPasswordNotification = `<!DOCTYPE html>
       <div class="container">
           <h1 class="heading">Recuperación de Contraseña</h1>
           <p>Haga clic en el botón de abajo para recuperar su contraseña:</p>
-          <a href="https://localhost8080/api/sessions/reset-password" class="button">Recuperar Contraseña</a>
+            <a class="button" href="${resetLink}">Recuperar Contraseña</a>
       </div>
   </body>
   </html>`;
+

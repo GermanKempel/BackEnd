@@ -1,0 +1,278 @@
+paths:
+  /api/carts:
+    get:
+      tags:
+        - Carts
+      summary: Get all carts
+      description: Get all carts
+      operationId: getAllCarts
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Carts"
+    post:
+      tags:
+        - Carts
+      summary: Add new cart
+      description: Add new cart
+      operationId: addNewCart
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Carts"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Carts"
+        "400":
+          description: Bad Request
+  /api/carts/:cid:
+    get:
+      tags:
+        - Carts
+      summary: Get cart by id
+      description: Get cart by id
+      operationId: getCartById
+      parameters:
+        - name: id
+          in: path
+          description: Id del carrito
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Carts"
+        "404":
+          description: Not Found
+    put:
+      tags:
+        - Carts
+      summary: Update cart by id
+      description: Update cart by id
+      operationId: updateCartById
+      parameters:
+        - name: id
+          in: path
+          description: Id del carrito
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Carts"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Carts"
+        "404":
+          description: Not Found
+    delete:
+      tags:
+        - Carts
+      summary: Delete cart by id
+      description: Delete cart by id
+      operationId: deleteCartById
+      parameters:
+        - name: id
+          in: path
+          description: Id del carrito
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Carts"
+        "404":
+          description: Not Found
+  /api/carts/:cid/products/:pid:
+    post:
+      tags:
+        - Carts
+      summary: Add product to cart
+      description: Add product to cart
+      operationId: addProductToCart
+      parameters:
+        - name: cid
+          in: path
+          description: Id del carrito
+          required: true
+          schema:
+            type: string
+        - name: pid
+          in: path
+          description: Id del producto
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Carts"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Carts"
+        "400":
+          description: Bad Request
+    put:
+      tags:
+        - Carts
+      summary: Update product by id
+      description: Update product by id
+      operationId: updateProductById
+      parameters:
+        - name: cid
+          in: path
+          description: Id del carrito
+          required: true
+          schema:
+            type: string
+        - name: pid
+          in: path
+          description: Id del producto
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Carts"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Carts"
+        "404":
+          description: Not Found
+    delete:
+      tags:
+        - Carts
+      summary: Delete product by id
+      description: Delete product by id
+      operationId: deleteProductById
+      parameters:
+        - name: cid
+          in: path
+          description: Id del carrito
+          required: true
+          schema:
+            type: string
+        - name: pid
+          in: path
+          description: Id del producto
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Carts"
+        "404":
+          description: Not Found
+  /api/carts/:cid/purchase:
+    post:
+      tags:
+        - Carts
+      summary: Purchase cart
+      description: Purchase cart
+      operationId: purchaseCart
+      parameters:
+        - name: cid
+          in: path
+          description: Id del carrito
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Carts"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Carts"
+        "400":
+          description: Bad Request
+
+components:
+  schemas:
+    Carts:
+      type: object
+      properties:
+        _id:
+          type: ObjectId
+          description: Id autogenerado por MongoDB.
+        user_id:
+          type: string
+          description: Id del usuario.
+        products:
+          type: array
+          description: Productos del carrito.
+          items:
+            type: object
+            properties:
+              product_id:
+                type: string
+                description: Id del producto.
+              quantity:
+                type: number
+                description: Cantidad del producto.
+        total:
+          type: number
+          description: Total del carrito.
+        status:
+          type: string
+          description: Estado del carrito.
+        created_at:
+          type: string
+          description: Fecha de creación del carrito.
+        updated_at:
+          type: string
+          description: Fecha de actualización del carrito.
+example:
+  _id: 60b6b0b0a9e9a1b4b8e0b0b0
+  user_id: 60b6b0b0a9e9a1b4b8e0b0b0
+  products:
+    - product_id: 60b6b0b0a9e9a1b4b8e0b0b0
+      quantity: 1
+  total: 100
+  status: pending
+  created_at: 2021-06-01T00:00:00.000Z
+  updated_at: 2021-06-01T00:00:00.000Z

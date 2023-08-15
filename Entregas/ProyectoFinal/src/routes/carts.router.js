@@ -7,7 +7,7 @@ const router = Router();
 router.post('/', saveCart);
 router.get('/', getAllCarts);
 router.get('/:cid', getCartById);
-router.post('/:cid/product/:pid', addProductToCart, authorization('user'));
+router.post('/:cid/products/:pid', addProductToCart, authorization('user'));
 router.delete('/:cid/products/:pid', removeProductFromCart);
 router.put('/:cid', updateCart);
 router.put('/:cid/products/:pid', updateProductQuantity);

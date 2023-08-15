@@ -4,15 +4,14 @@ import mongoosePaginate from "mongoose-paginate-v2";
 const productsCollection = "products";
 
 const productsSchema = new mongoose.Schema({
-    id: Number,
-    title: String,
-    description: String,
-    code: String,
-    price: Number,
-    status: String,
-    stock: Number,
-    category: String,
-    thumbnail: String,
+    title: { type: String, required: true },
+    description: { type: String, required: true },
+    code: { type: String, required: true },
+    price: { type: Number, required: true },
+    stock: { type: Number, required: true },
+    category: { type: String, required: true },
+    category: { type: String, required: true },
+    thumbnail: { type: String, required: true },
     owner: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "users",
@@ -29,4 +28,6 @@ const productsSchema = new mongoose.Schema({
 
 productsSchema.plugin(mongoosePaginate);
 
-export const productsModel = mongoose.model(productsCollection, productsSchema);
+const productsModel = mongoose.model(productsCollection, productsSchema);
+
+export default productsModel;
