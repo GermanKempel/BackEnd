@@ -105,11 +105,9 @@ router.get('/reset-password/:token', async (req, res) => {
             return res.status(400).send({ status: 'error', error: 'User not found' });
         }
 
-        // Render a view where the user can enter a new password
         return res.render('newPass');
     } catch (error) {
-        // Token verification failed or expired
-        return res.redirect('/reset-pass'); // Redirect to a page to generate a new reset link
+        return res.redirect('/reset-pass');
     }
 });
 
@@ -135,8 +133,7 @@ router.post('/update-password', async (req, res) => {
         return res.send({ status: 'success', message: 'Password updated' });
 
     } catch (error) {
-        // Token verification failed or expired
-        return res.redirect('/reset-pass'); // Redirect to a page to generate a new reset link
+        return res.redirect('/reset-pass');
     }
 
 });
