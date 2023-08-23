@@ -1,0 +1,58 @@
+import chai from 'chai';
+import supertest from 'supertest';
+
+const expect = chai.expect;
+const requester = supertest('http://localhost:8080');
+
+describe('Testing session', () => {
+
+  let token;
+
+  before(async () => {
+    const credentialsMock = {
+      email: 'gk@mail.com',
+      password: '1234'
+    };
+
+    const { header } = await requester.post('/api/sessions/login').send(credentialsMock);
+    token = header.authorization.split(' ')[1];
+  });
+
+
+  //Usar before para obtner el jwt jwt y usarlo en todas las peticiones del recurso
+  // before()
+
+  it('Debemos registrar un usuario correctamente', async () => {
+    const userMock = {
+      first_name: 'Coder',
+      last_name: 'House',
+      email: 'ch@gmail.com',
+      age: 25,
+      password: '1234'
+    };
+
+    const { statusCode, _body } = await requester.post('/api/sessions/register').send(userMock);
+    expect(statusCode).to.be.eql(200);
+    expect(_body).to.be.ok;
+  });
+
+  it('Debemos loguear al usuario y retornar un token en el header', async () => {
+    const credentialsMock = {
+      email: 'ch@gmail.com',
+      password: '1234'
+    };
+
+    const { statusCode, header } = await requester.post('/api/sessions/login').send(credentialsMock);
+    expect(statusCode).to.be.eql(200);
+    expect(header).to.have.property('authorization');
+  });
+
+  it('Debemos enviar el token en el servicio current y entregar la información del usuario', async () => {
+    const { _body } = await requester
+      .get('/api/sessions/current')
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(_body).to.have.property('payload');
+  }
+  );
+})

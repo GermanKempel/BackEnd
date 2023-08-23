@@ -10,19 +10,10 @@ const productsSchema = new mongoose.Schema({
     price: { type: Number, required: true },
     stock: { type: Number, required: true },
     category: { type: String, required: true },
-    category: { type: String, required: true },
     thumbnail: { type: String, required: true },
     owner: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "users",
-        default: null,
-        validate: {
-            validator: async function (userId) {
-                const user = await mongoose.model("users").findById(userId);
-                return user.role === "premium";
-            },
-            message: "User must be premium",
-        }
+        ref: "users"
     },
 });
 

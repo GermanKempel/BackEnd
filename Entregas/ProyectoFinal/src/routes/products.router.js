@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { saveProduct, getAllProducts, getProductById, updateProduct, deleteProduct } from '../controllers/products.controller.js';
-import { authorization } from '../utils.js';
+import { authorization, passportCall } from '../utils.js';
 import toAsyncRouter from 'async-express-decorator'
 
 const router = toAsyncRouter(Router());

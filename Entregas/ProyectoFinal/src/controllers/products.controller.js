@@ -40,30 +40,28 @@ const getProductById = async (req, res) => {
 // }
 
 const saveProduct = async (req, res) => {
-  //   try {
-  //     const product = req.body;
-  //     await productsService.saveProduct(product);
-  //     res.send({ status: 'Product saved successfully' });
-  //   } catch (error) {
-  //     res.status(500).send({ status: 'error', message: error.message });
-  //   }
-  // }
-  const product = req.body;
-  if (!product.title || !product.description || !product.price) {
-    throw CustomError.createError({
-      name: 'IncompleteProductError',
-      cause: generateProductErrorInfo(product),
-      message: 'Error trying to save product',
-      code: EErrors.INVALID_TYPE_ERROR
-    });
-  }
-  const currentUser = await userModel.findById(req.user._id);
-  const isUserPremium = currentUser.role === 'premium';
-  const owner = isUserPremium ? currentUser.email : 'admin';
   try {
     const product = req.body;
-    await productsService.saveProduct(product, owner);
-    res.send({ status: 'Product saved successfully' });
+    if (!product.title || !product.description || !product.price) {
+      throw CustomError.createError({
+        name: 'IncompleteProductError',
+        cause: generateProductErrorInfo(product),
+        message: 'Error trying to save product',
+        code: EErrors.INVALID_TYPE_ERROR
+      });
+    }
+    const currentUser = await userModel.findById(req.user._id);
+    const isUserPremiumAdmin = currentUser.role === 'premium' || currentUser.role === 'admin';
+    if (!isUserPremiumAdmin) {
+      throw CustomError.createError({
+        name: 'InvalidRoleError',
+        cause: generateProductErrorInfo(product),
+        message: 'Error trying to save product',
+        code: EErrors.INVALID_TYPE_ERROR
+      });
+    }
+    await productsService.saveProduct(product, currentUser);
+    res.send({ status: 'success', message: 'Product saved successfully' });
   } catch (error) {
     logger.info('Error trying to save product', error);
     res.status(500).send({ status: 'error', message: error.message });
@@ -98,7 +96,7 @@ const deleteProduct = async (req, res) => {
     const isOwner = product.owner === currentUser._id.toString();
 
     if (isAdmin || isOwner) {
-      await product.remove();
+      await productsService.deleteProduct(productId);
       return res.json({ status: 'Product deleted successfully' });
     } else {
       return res.status(403).json({ error: 'Not authorized to delete this product' });

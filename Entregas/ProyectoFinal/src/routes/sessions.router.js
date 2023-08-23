@@ -33,7 +33,10 @@ router.post('/login', passport.authenticate('login', { failureRedirect: 'fail_lo
     if (user) {
         if (!isValidPassword(user, password)) return res.status(400).send({ status: 'error', error: 'Invalid credentials' });
         const token = generateToken(user);
-        return res.send({ status: 'success', message: 'Login successful', token });
+
+        res.header('Authorization', `Bearer ${token}`);
+
+        return res.status(200).send({ status: 'success', message: 'Login successful' });
     }
 });
 
@@ -55,13 +58,11 @@ router.get('/github-callback', passport.authenticate(
 });
 
 router.get('/logout', (req, res) => {
-    req.session.destroy(err => {
-        if (err) return res.status(500).send({ status: 'error', error: 'Logout fail' });
-        res.redirect('/')
-    })
+    req.session.destroy
+    res.clearCookie('coderCookie').send({ status: 'success', message: 'Logout successful' });
 });
 
-router.get('/current', passport.authenticate('jwt', { session: false }), (req, res) => {
+router.get('/current', passport.authenticate('jwt'), (req, res) => {
     res.send({ status: 'success', payload: req.user });
 });
 
