@@ -29,6 +29,8 @@ describe('Testing de productos', () => {
 
   it('POST de /products debe crear un producto correctamente', async () => {
 
+
+
     const productMock = {
       title: 'Producto de prueba',
       description: 'Producto de prueba',
@@ -46,7 +48,6 @@ describe('Testing de productos', () => {
 
     expect(statusCode).to.be.equal(200);
     expect(_body).to.have.property('product');
-
   }
   );
 });

@@ -70,6 +70,16 @@ router.get('/current-custom', passportCall('jwt'), authorization('admin'), (req,
     res.send({ status: 'success', payload: req.user });
 });
 
+router.delete('/delete', passport.authenticate('jwt'), async (req, res) => {
+    const { _id } = req.user;
+    const user = await usersManager.getById(_id);
+    if (!user) return res.status(400).send({ status: 'error', error: 'User not found' });
+    if (user) {
+        await usersManager.delete(_id);
+        return res.send({ status: 'success', message: 'User deleted' });
+    }
+});
+
 router.post('/reset-password', async (req, res) => {
     const { email } = req.body;
     const user = await usersManager.getByEmail(email);

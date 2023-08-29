@@ -25,9 +25,15 @@ export default class UsersDao {
     return result;
   }
 
-  update = async (user) => {
-    const result = await userModel.updateOne({ _id: user._id }, user);
+  update = async (id, user) => {
+    const result = await userModel.updateOne({ _id: id }, user);
     return result;
   }
+
+  delete = async (id) => {
+    const result = await userModel.deleteOne({ _id: id });
+    return result;
+  }
+
 }
 

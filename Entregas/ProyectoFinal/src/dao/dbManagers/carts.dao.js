@@ -9,6 +9,10 @@ export default class CartsDao {
     return cartsModel.find().populate('products');
   }
 
+  async addCart(cart) {
+    return cartsModel.create(cart);
+  }
+
   async getById(cartId) {
     return cartsModel.findById(cartId).populate('products');
   }
