@@ -61,6 +61,5 @@ describe('Testing session', () => {
       .set('Authorization', `Bearer ${token}`);
 
     expect(_body.payload.email).to.be.eql('ch@gmail.com');
-  }
-  );
+  });
 })

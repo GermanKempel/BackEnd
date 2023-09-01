@@ -1,12 +1,15 @@
 const formLogin = document.getElementById("loginForm");
 
 formLogin.addEventListener('submit', async e => {
-    e.preventDefault()
+    e.preventDefault();
+
+    const email = formLogin[0].value;
+    const password = formLogin[1].value;
 
     const datos = {
-        email: formLogin[0].value,
-        password: formLogin[1].value,
-    }
+        email: email,
+        password: password,
+    };
 
     const respuesta = await fetch('/api/sessions/login', {
         method: 'POST',
@@ -24,4 +27,4 @@ formLogin.addEventListener('submit', async e => {
     } else {
         alert(json.error);
     }
-})
+});

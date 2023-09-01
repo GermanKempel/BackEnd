@@ -19,5 +19,19 @@ export default class UsersRepository {
     const result = await this.usersDao.save(user);
     return result;
   }
-}
 
+  update = async (id, user) => {
+    const result = await this.usersDao.update(id, user);
+    return result;
+  }
+
+  updateToPremium = async (id) => {
+    const result = await this.usersDao.updateToPremium(id);
+    return result;
+  }
+
+  delete = async (id) => {
+    const result = await this.usersDao.delete(id);
+    return result;
+  }
+}

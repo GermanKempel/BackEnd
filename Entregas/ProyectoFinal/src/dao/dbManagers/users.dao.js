@@ -30,10 +30,18 @@ export default class UsersDao {
     return result;
   }
 
+  updateToPremium = async (id) => {
+    const result = await userModel.updateOne({ _id: id }, { premium: true });
+    return result;
+  }
+
   delete = async (id) => {
     const result = await userModel.deleteOne({ _id: id });
     return result;
   }
 
+  deleteAll = async () => {
+    const result = await userModel.deleteMany();
+  }
 }
 

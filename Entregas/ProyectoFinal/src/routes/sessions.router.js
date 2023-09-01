@@ -36,7 +36,11 @@ router.post('/login', passport.authenticate('login', { failureRedirect: 'fail_lo
 
         res.header('Authorization', `Bearer ${token}`);
 
-        return res.status(200).send({ status: 'success', message: 'Login successful' });
+        user.last_connection = new Date();
+
+        await usersManager.update(user);
+
+        return res.status(200).send({ status: 'success', message: 'Login successful' })
     }
 });
 
@@ -58,11 +62,14 @@ router.get('/github-callback', passport.authenticate(
 });
 
 router.get('/logout', (req, res) => {
+    const user = req.session.user;
+    user.last_connection = new Date();
+    usersManager.update(user);
     req.session.destroy
-    res.clearCookie('coderCookie').send({ status: 'success', message: 'Logout successful' });
+    res.send({ status: 'success', message: 'User logged out' });
 });
 
-router.get('/current', passport.authenticate('jwt'), (req, res) => {
+router.get('/current', authToken, passport.authenticate('jwt'), (req, res) => {
     res.send({ status: 'success', payload: req.user });
 });
 

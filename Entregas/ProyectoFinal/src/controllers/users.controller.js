@@ -4,6 +4,7 @@ import CustomError from '../middlewares/errors/CustomError.js';
 import EErrors from '../middlewares/errors/enums.js';
 import { generateUserErrorInfo } from '../middlewares/errors/info.js';
 import logger from '../utils/loggers.js';
+import userModel from "../dao/dbManagers/models/users.model.js";
 
 const saveUser = async (req, res) => {
   const user = req.body;
@@ -42,7 +43,7 @@ const getUserByEmail = async (req, res) => {
 
 const getUserDTO = async (req, res) => {
   try {
-    const email = req.params.email;
+    const email = req.query.email;
     const user = await usersService.getUserByEmail(email);
     const userDTO = new UsersDto(user);
     res.send({ status: "success", user: userDTO });
@@ -52,9 +53,68 @@ const getUserDTO = async (req, res) => {
   }
 };
 
+const getById = async (req, res) => {
+  try {
+    const userId = req.params.uid;
+    const user = await usersService.getById(userId);
+    res.send({ status: "success", user });
+  } catch (error) {
+    logger.info('Error trying to get user by id', error);
+    res.status(500).send({ status: "error", message: error.message });
+  }
+};
+
+const update = async (req, res) => {
+  try {
+    const userId = req.params.uid;
+    const user = req.body;
+    const uploadDocuments = req.files;
+    const updatedUser = await usersService.update(userId, user, uploadDocuments);
+    if (uploadDocuments) {
+      res.send({ status: "success", message: 'Documents uploaded successfully' });
+    }
+    res.send({ status: "success", user: updatedUser });
+  } catch (error) {
+    logger.info('Error trying to update user', error);
+    res.status(500).send({ status: "error", message: error.message });
+  }
+}
+
+const updateToPremium = async (req, res) => {
+  try {
+    const userId = req.params.uid;
+    const user = await userModel.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ status: "error", message: "User not found." });
+    }
+    if (user.role === 'premium') {
+      return res.status(400).json({ status: "error", message: "User is already premium." });
+    }
+    if (
+      !user.documents.includes('identificacion') ||
+      !user.documents.includes('comprobanteDeDomicilio') ||
+      !user.documents.includes('comprobanteDeEstadoDeCuenta')
+    ) {
+      return res.status(400).json({ status: "error", message: "User has not completed document submission." });
+    }
+
+    user.role = 'premium';
+    await user.save();
+
+    res.send({ status: "success", user });
+  } catch (error) {
+    logger.info('Error trying to update user to premium', error);
+    res.status(500).send({ status: "error", message: error.message });
+  }
+}
+
 export {
+  updateToPremium,
+  update,
   saveUser,
   getAllUsers,
   getUserByEmail,
-  getUserDTO
+  getUserDTO,
+  getById
 }

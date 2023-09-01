@@ -1,53 +1,85 @@
 import chai from 'chai';
 import supertest from 'supertest';
+import mongoose from 'mongoose';
+import UsersDao from '../../../src/dao/dbManagers/users.dao.js';
 
 const expect = chai.expect;
 const requester = supertest('http://localhost:8080');
 
 describe('Testing de productos', () => {
 
-  let token;
+  let usersDao;
 
   before(async () => {
-    const credentialsMock = {
-      email: 'gk@mail.com',
-      password: '1234'
-    };
 
-    const { header } = await requester.post('/api/sessions/login').send(credentialsMock);
-    token = header.authorization.split(' ')[1];
+    await mongoose.connect('mongodb+srv://GermanKempel:GcsLTjZBjYXUT5Ht@cluster0.tnbfe67.mongodb.net/testing?retryWrites=true&w=majority');
+
+    usersDao = new UsersDao();
+
+    await usersDao.deleteAll();
+
+    const newUser = {
+      first_name: 'Test',
+      last_name: 'User',
+      email: 'test@user.com',
+      age: '25',
+      password: '1234',
+      role: 'admin'
+    }
+
+    await usersDao.save(newUser);
+
   });
 
 
   it('GET de /products debe devolver todos los productos', async () => {
-    const { statusCode, _body } = await requester.get('/api/products');
 
-    expect(statusCode).to.be.equal(200);
-    expect(_body).to.have.property('products');
+    const response = await requester.get('/products');
+
+    expect(response.status).to.be.equal(200);
+    expect(response.body).to.have.property('products');
+    expect(response.body.products).to.be.an('array');
   }
+
   );
 
-  it('POST de /products debe crear un producto correctamente', async () => {
+  it('POST /products debe crear un producto', async () => {
 
-
-
-    const productMock = {
-      title: 'Producto de prueba',
-      description: 'Producto de prueba',
-      code: '1234',
+    const product = {
+      title: 'Test',
+      description: 'Test',
       price: 100,
-      stock: 10,
-      category: 'Producto de prueba',
-      thumbnail: 'img.png'
+      thumbnail: 'Test',
+      code: 'Test'
     };
 
-    const { statusCode, _body } = await requester
-      .post('/api/products')
-      .set('Authorization', `Bearer ${token}`)
-      .send(productMock);
+    const response = await requester.post('/products')
+      .send(product);
 
-    expect(statusCode).to.be.equal(200);
-    expect(_body).to.have.property('product');
+    expect(response.status).to.be.equal(201);
+    expect(response.body).to.have.property('product');
+    expect(response.body.product).to.be.an('object');
   }
   );
-});
+
+  it('PUT /products/:pid debe actualizar un producto', async () => {
+
+    const product = {
+      title: 'Test',
+      description: 'Test',
+      price: 100,
+      thumbnail: 'Test',
+      code: 'Test'
+    };
+
+    const newProduct = await usersDao.addProduct(product);
+
+    const response = await requester.put(`/products/${newProduct._id}`)
+      .send(product);
+
+    expect(response.status).to.be.equal(200);
+    expect(response.body).to.have.property('product');
+    expect(response.body.product).to.be.an('object');
+  }
+  );
+})
