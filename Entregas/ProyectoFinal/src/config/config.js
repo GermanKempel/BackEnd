@@ -11,4 +11,5 @@ export default {
   Github_clientSecret: process.env.GITHUB_CLIENT_SECRET,
   userNodeMailer: process.env.USER_NODE_MAILER,
   passNodeMailer: process.env.PASS_NODE_MAILER,
+  ENVIRONMENT: process.env.NODE_ENV
 };

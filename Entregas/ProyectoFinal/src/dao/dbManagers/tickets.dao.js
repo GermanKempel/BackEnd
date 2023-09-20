@@ -34,8 +34,8 @@ export default class TicketsDao {
     return ticketModel.findByIdAndUpdate(ticketId, { $set: { products } });
   }
 
-  async saveTicket(ticketId) {
-    return ticketModel.create(ticketId);
+  async saveTicket(ticket) {
+    return ticketModel.create(ticket);
   }
 
   async deleteTicket(ticketId) {

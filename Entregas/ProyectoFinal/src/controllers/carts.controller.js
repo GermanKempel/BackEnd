@@ -27,7 +27,8 @@ const addProductToCart = async (req, res) => {
   try {
     const cartId = req.params.cid;
     const productId = req.params.pid;
-    const result = await cartService.addProduct(cartId, productId);
+    const quantity = Number(req.body.quantity);
+    const result = await cartService.addProduct(cartId, productId, quantity);
     res.send({ status: 'Product added to cart succesfully', result });
   } catch (error) {
     logger.info('Error trying to add product to cart', error)
@@ -86,33 +87,12 @@ const updateProductQuantity = async (req, res) => {
 const purchaseCart = async (req, res) => {
   try {
     const cartId = req.params.cid;
+    const cart = await cartService.getById(cartId);
+    const ticket = await ticketService.saveTicket({ purchaser: { userId: cart.userId }, totalPrice: cart.totalPrice });
     const result = await cartService.purchaseCart(cartId);
+    console.log(cartId, ticket, cart);
 
-    const failedProducts = [];
-
-    for (const item of result.failedProducts) {
-      const product = await productsModel.findById(item.productId);
-
-      if (!product) {
-        failedProducts.push(item.productId);
-      } else if (product.stock >= item.quantity) {
-        product.stock -= item.quantity;
-        await product.save();
-      } else {
-        failedProducts.push(item.productId);
-      }
-    }
-
-    // Filtrar los productos que no se pudieron comprar y actualizar el carrito
-    const cart = await cartService.getCartById(cartId);
-    const remainingItems = cart.products.filter(item => !failedProducts.includes(item.productId));
-    cart.products = remainingItems;
-    await cartService.updateCart(cartId, remainingItems);
-
-    // Generar el ticket con los datos de la compra
-    const ticket = await ticketService.saveTicket(result);
-
-    res.send({ status: 'success', result: ticket });
+    res.send({ status: 'success', ticket, cart, result });
   }
   catch (error) {
     logger.info('Error trying to purchase cart', error);

@@ -14,19 +14,19 @@ export default class CartsDao {
   }
 
   async getById(cartId) {
-    return cartsModel.findById(cartId).populate('products');
+    return cartsModel.findById(cartId).populate('products.productId');
   }
 
   async getByUserId(userId) {
     return cartsModel.findOne({ userId }).populate('products');
   }
 
-  async addProduct(cartId, productId) {
-    return cartsModel.findByIdAndUpdate(cartId, { $push: { products: productId } });
+  async addProduct(cartId, productId, quantity) {
+    return cartsModel.findByIdAndUpdate(cartId, { $push: { products: { productId, quantity } } });
   }
 
   async removeProduct(cartId, productId) {
-    return cartsModel.findByIdAndUpdate(cartId, { $pull: { products: productId } });
+    return cartsModel.findByIdAndUpdate(cartId, { $pull: { products: { productId } } });
   }
 
   async removeAllProducts(cartId) {
@@ -52,4 +52,5 @@ export default class CartsDao {
   async deleteCart(cartId) {
     return cartsModel.findByIdAndDelete(cartId);
   }
+
 }

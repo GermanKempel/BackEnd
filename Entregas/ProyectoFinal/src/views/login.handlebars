@@ -1,12 +1,16 @@
+<html>
+  <body>
 <div>
   <h1>Login</h1>
-  <form id="loginForm">
-    <input type="email" name="email" placeholder="Email" required>
-    <input type="password" name="password" placeholder="Password" required>
-    <button type="submit">Ingresar</button>
+  <form id="formLogin">
+    <input type="email" name="email" placeholder="Email" >
+    <input type="password" name="password" placeholder="Password" >
+    <button id="loginButton" type="submit">Ingresar</button>
   <p>¿Olvidaste tu contraseña?
     <a href="/reset-pass">Hace click aquí</a></p>
-  <a href="/api/sessions/github"><button>Ingresar con github</button></a>
+  <button id="githubLoginButton">Ingresar con GitHub</button>
   <p>¿No estás registrado? <a href="/register">Regístrate aquí</a></p>
 </div>
+</body>
 <script src="js/login.js"></script>
+</html>

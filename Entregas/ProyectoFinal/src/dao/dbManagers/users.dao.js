@@ -6,12 +6,12 @@ export default class UsersDao {
   }
 
   getAll = async () => {
-    const users = await userModel.find();
-    return users.map(user => user.toObject());
+    const users = await userModel.find().lean();
+    return users;
   }
 
-  getById = async (id) => {
-    const user = await userModel.findById(id).lean();
+  getById = async (userId) => {
+    const user = await userModel.findById(userId).lean();
     return user;
   }
 
@@ -25,23 +25,28 @@ export default class UsersDao {
     return result;
   }
 
-  update = async (id, user) => {
-    const result = await userModel.updateOne({ _id: id }, user);
+  update = async (userId, user, uploadDocuments) => {
+    const result = await userModel.updateOne({ _id: userId }, user, uploadDocuments);
     return result;
   }
 
-  updateToPremium = async (id) => {
-    const result = await userModel.updateOne({ _id: id }, { premium: true });
+  updateRole = async (userId, role) => {
+    const result = await userModel.updateOne({ _id: userId }, { role });
+    return result;
+  }
+  updateToPremium = async (userId) => {
+    const result = await userModel.updateOne({ _id: userId }, { premium: true });
     return result;
   }
 
-  delete = async (id) => {
-    const result = await userModel.deleteOne({ _id: id });
+  delete = async (userId) => {
+    const result = await userModel.deleteOne({ _id: userId });
     return result;
   }
 
   deleteAll = async () => {
     const result = await userModel.deleteMany();
+    return result;
   }
 }
 

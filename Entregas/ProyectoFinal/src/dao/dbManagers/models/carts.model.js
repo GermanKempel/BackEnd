@@ -5,17 +5,20 @@ const cartsCollection = 'carts';
 const cartsSchema = new mongoose.Schema({
     timestamp: { type: Date, required: true },
     products: [{
-        product: {
+        productId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'products',
-            required: true
         },
-        quantity: { type: Number, required: true }
+        quantity: { type: Number }
     }],
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'users',
         required: true
+    },
+    totalPrice: {
+        type: Number,
+        default: 0
     }
 });
 

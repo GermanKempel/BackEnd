@@ -103,4 +103,17 @@ export default class ProductsDao {
       console.log(error);
     }
   }
+
+  getPaginatedProducts = async (page, limit) => {
+    try {
+      const productos = await this.getAll();
+      const startIndex = (page - 1) * limit;
+      const endIndex = page * limit;
+      const paginatedProducts = productos.slice(startIndex, endIndex);
+      return paginatedProducts;
+    }
+    catch (error) {
+      console.log(error);
+    }
+  }
 }

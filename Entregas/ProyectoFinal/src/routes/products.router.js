@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { saveProduct, getAllProducts, getProductById, updateProduct, deleteProduct } from '../controllers/products.controller.js';
+import { getMockingProducts, saveProduct, getAllProducts, getProductById, updateProduct, deleteProduct } from '../controllers/products.controller.js';
 import { authorization, passportCall } from '../utils.js';
 import toAsyncRouter from 'async-express-decorator'
 
@@ -10,5 +10,6 @@ router.get('/', getAllProducts);
 router.get('/:pid', getProductById);
 router.put('/:pid', updateProduct, authorization('admin'));
 router.delete('/:pid', deleteProduct, authorization('admin'));
+router.get('/mockingProducts', getMockingProducts);
 
 export default router;

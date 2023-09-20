@@ -1,6 +1,5 @@
 import passport from 'passport';
 import local from 'passport-local';
-import userModel from '../dao/dbManagers/models/users.model.js';
 import { createHash, isValidPassword } from '../utils.js';
 import GitHubStrategy from 'passport-github2';
 import jwt from 'passport-jwt';
@@ -21,15 +20,15 @@ const Github_clientSecret = config.Github_clientSecret;
 const initializePassport = () => {
 
   passport.use('jwt', new JWTStrategy({
-    secretOrKey: private_key,
-    jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken()
-  }, async (token, done) => {
+    jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor]),
+    secretOrKey: private_key
+  }, async (payload, done) => {
     try {
-      return done(null, token.user);
+      return done(null, payload.user);
     } catch (error) {
-      done(error);
+      done(error, false);
     }
-  }))
+  }));
 
   passport.use('register', new LocalStrategy({
     passReqToCallback: true, //permite acceder al objeto request como cualquier otro middleware,
@@ -62,18 +61,23 @@ const initializePassport = () => {
   passport.use('login', new LocalStrategy({
     usernameField: 'email'
   }, async (username, password, done) => {
+    try {
+      const user = await usersManager.getByEmail(username);
 
-    const user = await usersManager.getByEmail(username);
+      if (!user) {
+        return done(null, false, { message: 'Invalid credentials' });
+      }
 
-    if (!user) return done(null, false, { message: 'Invalid credentials' });
-
-    if (user) {
       if (!isValidPassword(user, password)) return done(null, false, { message: 'Invalid credentials' });
+
       return done(null, user);
+
+    } catch (error) {
+      return done(`Error al obtener el usario: ${error}`)
     }
   }));
 
-  passport.use(new GitHubStrategy({
+  passport.use('github', new GitHubStrategy({
 
     clientID: Github_clientID,
     clientSecret: Github_clientSecret,
@@ -82,7 +86,7 @@ const initializePassport = () => {
   }, async (accessToken, refreshToken, profile, done) => {
     try {
       const email = profile.emails[0].value;
-      const user = await userModel.findOne({ email });
+      const user = await usersManager.getByEmail(email);
       if (!user) {
         const newUser = {
           first_name: profile._json.name,
@@ -91,11 +95,13 @@ const initializePassport = () => {
           age: 18,
           password: ''
         };
-        const createdUser = await userModel.create(newUser);
+        const createdUser = await usersManager.save(newUser);
         return done(null, createdUser);
+      } else {
+        return done(null, user);
       }
-      return done(null, user);
     } catch (error) {
+      console.log(error);
       return done('Error al obtener el usuario: ${error}');
     }
   }));
@@ -105,11 +111,10 @@ const initializePassport = () => {
   });
 
   passport.deserializeUser(async (_id, done) => {
-    const user = await userModel.findById(_id);
+    const user = await usersManager.getById(_id);
     done(null, user);
   });
 };
-
 
 const cookieExtractor = req => {
   let token = null;

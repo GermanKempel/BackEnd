@@ -1,89 +1,27 @@
 import { Router } from 'express';
-// import ProductsManager from '../dao/dbManagers/products.dao.js';
-// import CartsManager from '../dao/dbManagers/carts.dao.js';
-import { generateRandomProducts } from '../utils.js';
-import { getPaginatedProducts } from '../controllers/products.controller.js';
+import { authorization, passportCall } from '../utils.js';
+import { renderProducts, renderHomePage, renderRegisterPage, renderCartPage, renderLoginPage, renderProductById, renderRealtimeProducts, renderResetPasswordPage, renderUsersPage } from '../controllers/views.controller.js';
 
 
 const router = Router();
 
-// const productManager = new ProductsManager();
-// const cartManager = new CartsManager();
 
-// router.get('/', async (req, res) => {
-//   res.render('home', { products: await productManager.getAll() });
-// });
+router.get('/realtimeproducts', renderRealtimeProducts);
 
-router.get('/realtimeproducts', async (req, res) => {
-  res.render('realtimeproducts', { products: await productManager.getAll() });
-});
+router.get('/products', passportCall('jwt'), renderProducts);
 
-router.get('/products', getPaginatedProducts)
+router.get('/products/:pid', renderProductById);
 
-router.get('/products/:pid', async (req, res) => {
-  const productId = req.params.pid;
+router.get('/carts/:cid', renderCartPage);
 
-  // Obtener producto por ID
-  const product = await productManager.getProductById(productId);
+router.get('/register', renderRegisterPage);
 
-  res.render('product-details', { product });
-});
+router.get('/login', renderLoginPage);
 
-router.post('/products/:pid/add-to-cart', async (req, res) => {
-  const productId = req.params.pid;
-  const cartId = req.params.cid;
+router.get('/', renderHomePage);
 
-  // Agregar producto al carrito
-  await cartManager.addProductToCart(cartId, productId);
+router.get('/reset-pass', renderResetPasswordPage);
 
-  res.redirect('/products');
-});
-
-
-router.get('/carts/:cid', async (req, res) => {
-  const cartId = req.params.cid;
-
-  // Obtener carrito por ID
-  const cart = await cartManager.getCartById(cartId);
-
-  // Obtener productos asociados al carrito
-  const cartProducts = await productManager.getProductsInCart(cart.products);
-
-  res.render('cart-details', { cartProducts });
-});
-
-//Acceso público y privado
-// const publicAccess = (req, res, next) => {
-//   if (req.session.user) return res.redirect('/products');
-//   next();
-// }
-
-// const privateAccess = (req, res, next) => {
-//   if (!req.session.user) return res.redirect('/login');
-//   next();
-// }
-
-router.get('/register', (req, res) => {
-  res.render('register');
-});
-
-router.get('/login', (req, res) => {
-  res.render('login');
-});
-
-router.get('/', (req, res) => {
-  res.render('login', {
-    user: req.session.user
-  });
-});
-
-router.get('/mockingProducts', (req, res) => {
-  const products = generateRandomProducts();
-  res.send({ status: 'success', products });
-});
-
-router.get('/reset-pass', (req, res) => {
-  res.render('resetPass');
-});
+router.get('/users', renderUsersPage, authorization('admin'))
 
 export default router;

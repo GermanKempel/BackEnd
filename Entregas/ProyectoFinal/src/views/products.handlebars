@@ -8,35 +8,45 @@
       font-weight: bold; margin: 0; } .product-description { margin: 5px 0; }
       .product-price { margin: 5px 0; } .product-stock { margin: 5px 0; }
       .quantity-input { margin-right: 10px; } .purchase-button { padding: 10px
-      20px; background-color: #4CAF50; color: white; border: none; cursor:
-      pointer; }
+      20px; background-color: #4caf50; color: white; border: none; cursor:
+      pointer; } .finalizar-compra-button { padding: 10px 20px;
+      background-color: #f44336; color: white; border: none; cursor: pointer; }
+      .logout-button { position: absolute; top: 10px; right: 10px;
+      background-color: #f44336; color: white; padding: 10px 20px; border: none;
+      cursor: pointer; }
     </style>
   </head>
   <body>
-    <h1>Product List</h1>
+    <h1>Lista de Productos</h1>
     <div id="product-list">
+      <div id="cart-data" data-cart-id={{cartId}}></div>
       <ul>
         {{#each products.docs}}
-          <li class="product">
-            <img
-              src="product-image.jpg"
-              alt="Product Image"
-              class="product-image"
-            />
+          <li class="product" data-product-id={{id}}>
+
             <div class="product-details">
               <h2 class="product-title">{{title}}</h2>
               <p class="product-description">{{description}}</p>
               <p class="product-price">Precio: ${{price}}</p>
               <p class="product-stock">Stock: {{stock}}</p>
               <div>
-                <input type="number" class="quantity-input" min="1" value="1" />
-                <button class="purchase-button">Comprar</button>
+                <input
+                  id="quantity-{{id}}"
+                  type="number"
+                  class="quantity-input"
+                  min="1"
+                  value="1"
+                />
+                <button class="purchase-button" type="click">Agregar al carrito</button>
+                <button class="finalizar-compra-button" type="click">Finalizar
+                  compra</button>
               </div>
             </div>
           </li>
         {{/each}}
       </ul>
     </div>
-
+    <button id="logout-button" class="logout-button">Logout</button>
   </body>
+  <script type="module" src="js/addToCart.js"></script>
 </html>

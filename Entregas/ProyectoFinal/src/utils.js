@@ -37,10 +37,10 @@ export const generateRandomProducts = () => {
   return products;
 }
 
-const PRIVATE_KEY = config.private_key;
+const private_key = config.private_key;
 
 export const generateToken = (user) => {
-  const token = jwt.sign({ user }, PRIVATE_KEY, { expiresIn: '24h' });
+  const token = jwt.sign({ user }, private_key, { expiresIn: '24h' });
   return token;
 };
 
@@ -51,7 +51,7 @@ export const authToken = (req, res, next) => {
 
   const token = authToken.split(' ')[1];
 
-  jwt.verify(token, PRIVATE_KEY, (error, credentials) => {
+  jwt.verify(token, private_key, (error, credentials) => {
     if (error) return res.status(403).send({ error: 'Not authorized' });
     req.user = credentials.user;
     next();
@@ -76,6 +76,16 @@ export const authorization = (role) => {
     if (req.user.role != role) return res.status(403).send({ error: 'Not permissions' });
     next();
   }
+}
+
+export const publicAccess = (req, res, next) => {
+  if (req.session.user) return res.redirect('/products');
+  next();
+}
+
+export const privateAccess = (req, res, next) => {
+  if (!req.session.user) return res.redirect('/login');
+  next();
 }
 
 export const createHash = password => bcrypt.hashSync(password, bcrypt.genSaltSync(10))

@@ -21,6 +21,16 @@ import swaggerUiExpress from 'swagger-ui-express';
 
 const app = express();
 
+app.use(session({
+  store: MongoStore.create({
+    client: mongoose.connection.getClient(),
+    ttl: 3600,
+  }),
+  secret: 'secret',
+  resave: true,
+  saveUninitialized: true,
+}));
+
 const swaggerOptions = {
   definition: {
     openapi: '3.0.1',
@@ -40,20 +50,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.use(session({
-  store: MongoStore.create({
-    client: mongoose.connection.getClient(),
-    ttl: 3600,
-  }),
-  secret: 'secret',
-  resave: true,
-  saveUninitialized: true,
-}));
-
-initializePassport();
-app.use(passport.initialize());
-app.use(passport.session());
-
 app.engine('handlebars', handlebars.engine({
   runtimeOptions: {
     allowProtoPropertiesByDefault: true,
@@ -61,10 +57,12 @@ app.engine('handlebars', handlebars.engine({
   }
 }));
 
-// app.engine('handlebars', handlebars.engine())
-
 app.set('views', `${__dirname}/views`);
 app.set('view engine', 'handlebars');
+
+initializePassport();
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use('/', viewsRouter)
 app.use("/api/products", productsRouter);
@@ -88,16 +86,3 @@ const PORT = config.port;
 
 app.listen(PORT, () =>
   console.log("Server listening on port" + PORT));
-
-// const io = new Server(server);
-
-// io.on('connection', async socket => {
-//   console.log('Nueva conexión');
-
-//   const productManager = new ProductManager("src/files/productos.json");
-//   const products = await productManager.getAll();
-
-//   io.emit('showProducts', products)
-
-// });
-

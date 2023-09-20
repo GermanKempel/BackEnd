@@ -1,6 +1,8 @@
-const formLogin = document.getElementById("loginForm");
+const formLogin = document.getElementById("formLogin");
+const loginButton = document.getElementById("loginButton");
+const githubLoginButton = document.getElementById('githubLoginButton')
 
-formLogin.addEventListener('submit', async e => {
+loginButton.addEventListener('click', async e => {
     e.preventDefault();
 
     const email = formLogin[0].value;
@@ -11,7 +13,9 @@ formLogin.addEventListener('submit', async e => {
         password: password,
     };
 
-    const respuesta = await fetch('/api/sessions/login', {
+    console.log(datos);
+
+    const response = await fetch('/api/sessions/login', {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
@@ -20,11 +24,20 @@ formLogin.addEventListener('submit', async e => {
         body: JSON.stringify(datos)
     });
 
-    const json = await respuesta.json();
+    console.log(response);
+
+    const json = await response.json();
+
+    console.log(json);
 
     if (json.status === 'success') {
         window.location.replace('/products');
     } else {
         alert(json.error);
     }
-});
+
+    githubLoginButton.addEventListener('click', async e => {
+        e.preventDefault();
+        window.location.href = '/api/sessions/github';
+    })
+})

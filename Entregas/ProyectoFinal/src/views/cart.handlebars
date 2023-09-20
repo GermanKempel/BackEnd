@@ -1,0 +1,66 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cart</title>
+    <style>
+      body { font-family: Arial, sans-serif; margin: 20px; } h1 { text-align:
+      center; } .table-container { display: flex; justify-content:
+      space-between; margin-bottom: 20px; } table { width: 48%; border-collapse:
+      collapse; } th, td { padding: 10px; text-align: left; } th {
+      background-color: #f2f2f2; } .thumbnail { max-width: 100px; max-height:
+      100px; } .delete-btn { padding: 5px 10px; background-color: #ff2e2e;
+      color: white; border: none; cursor: pointer; } .delete-btn:hover {
+      background-color: #a04545; } .btn { padding: 5px 10px; background-color:
+      #4CAF50; color: white; border: none; cursor: pointer; } .btn:hover {
+      background-color: #45a049; } .buy-btn { display: block; margin: 20px auto;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Cart</h1>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Precio Unitario</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each products}}
+            <tr>
+              <td>{{title}}</td>
+              <td id="product-price">{{price}}</td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
+      <table>
+        <thead>
+          <tr>
+            <th>Quantity</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each cart.products}}
+            <tr class="product" data-product-id="{{productId.id}}">
+              <td id="product-quantity">{{quantity}}</td>
+              <td>
+                <button
+                  id="delete"
+                  type="button"
+                  class="delete-btn"
+                >Eliminar</button>
+              </td>
+            </tr>
+          {{/each}}
+          <td colspan="2"><strong>Total Price:</strong>
+            <span id="total-price">{{cart.totalPrice}}</span></td>
+        </tbody>
+      </table>
+    </div>
+    <button id="buy" type="button" class="btn buy-btn">Comprar</button>
+  </body>
+  <script type="module" src="/js/cart.js"></script>
+</html>

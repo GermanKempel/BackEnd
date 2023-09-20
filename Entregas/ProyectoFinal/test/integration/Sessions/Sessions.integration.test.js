@@ -4,23 +4,11 @@ import supertest from 'supertest';
 const expect = chai.expect;
 const requester = supertest('http://localhost:8080');
 
-describe('Testing session', () => {
+describe('Testing session', async () => {
+
+  await mongoose.connect('mongodb+srv://GermanKempel:GcsLTjZBjYXUT5Ht@cluster0.tnbfe67.mongodb.net/testing?retryWrites=true&w=majority');
 
   let token;
-
-  // before(async () => {
-  //   const credentialsMock = {
-  //     email: 'gk@mail.com',
-  //     password: '1234'
-  //   };
-
-  //   const { header } = await requester.post('/api/sessions/login').send(credentialsMock);
-  //   token = header.authorization.split(' ')[1];
-  // });
-
-
-  //Usar before para obtner el jwt jwt y usarlo en todas las peticiones del recurso
-  // before()
 
   it('Debemos registrar un usuario correctamente', async () => {
     const userMock = {

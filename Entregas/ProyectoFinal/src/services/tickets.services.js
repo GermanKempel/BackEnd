@@ -50,10 +50,10 @@ const updateTicket = async (ticketId) => {
   return result;
 }
 
-const saveTicket = async (ticketId) => {
-  const result = await ticketsRepository.saveTicket(ticketId);
-  if (!ticketId) {
-    throw new Error("Ticket not found");
+const saveTicket = async (ticket) => {
+  const result = await ticketsRepository.saveTicket(ticket);
+  if (!result) {
+    throw new Error("Ticket not saved");
   }
   return result;
 }

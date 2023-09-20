@@ -9,7 +9,7 @@ export default class CartsDao {
   }
 
 
-  async getCarts() {
+  async getAll() {
     try {
       if (fs.existsSync(this.path)) {
         const data = await fs.promises.readFile(this.path, 'utf-8');
@@ -24,7 +24,7 @@ export default class CartsDao {
   }
 
 
-  async addNewCart() {
+  async addCart() {
     try {
       const cart = {
         products: [],
@@ -44,7 +44,7 @@ export default class CartsDao {
   }
 
 
-  async addProductToCart(cartId, productId) {
+  async addProduct(cartId, productId) {
     try {
       const carts = await this.getCarts();
       const productById = await productManager.getProductById(productId);
@@ -69,7 +69,7 @@ export default class CartsDao {
   }
 
 
-  async getCartsById(id) {
+  async getById(id) {
     try {
       const carts = await this.getCarts();
       const cart = carts.find((c) => c.id === id);

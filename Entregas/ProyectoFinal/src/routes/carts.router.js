@@ -1,13 +1,13 @@
 import { Router } from 'express';
 import { saveCart, getAllCarts, getCartById, addProductToCart, removeProductFromCart, updateCart, updateProductQuantity, removeAllProductsFromCart, purchaseCart } from '../controllers/carts.controller.js';
-import { authorization } from '../utils.js';
+import toAsyncRouter from 'async-express-decorator';
 
-const router = Router();
+const router = toAsyncRouter(Router());
 
 router.post('/', saveCart);
 router.get('/', getAllCarts);
 router.get('/:cid', getCartById);
-router.post('/:cid/products/:pid', addProductToCart, authorization('user'));
+router.post('/:cid/products/:pid', addProductToCart);
 router.delete('/:cid/products/:pid', removeProductFromCart);
 router.put('/:cid', updateCart);
 router.put('/:cid/products/:pid', updateProductQuantity);

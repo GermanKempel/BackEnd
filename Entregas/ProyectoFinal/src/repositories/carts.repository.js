@@ -20,8 +20,8 @@ export default class CartsRepository {
     return cart;
   }
 
-  addProduct = async (cartId, productId) => {
-    const result = await this.cartsDao.addProduct(cartId, productId);
+  addProduct = async (cartId, productId, quantity) => {
+    const result = await this.cartsDao.addProduct(cartId, productId, quantity);
     return result;
   }
 

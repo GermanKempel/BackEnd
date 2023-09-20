@@ -1,0 +1,54 @@
+<html>
+  <head>
+    <title>Usuarios</title>
+  </head>
+  <body>
+    <h1>Usuarios</h1>
+    <div id="users">
+      <table>
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Correo</th>
+            <th>Rol</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each users}}
+
+            <tr class="user" data-user-id={{id}}>
+              <td>{{first_name}}</td>
+              <td>{{last_name}}</td>
+              <td>{{email}}</td>
+              <td>{{role}}</td>
+              <td>
+                <form>
+                  <select name="role">
+                    <option value="admin">Admin</option>
+                    <option value="user">User</option>
+                    <option value="premium">Premium</option>
+                  </select>
+                  <button
+                    id="update"
+                    class="update-button"
+                    type="click"
+                  >Actualizar Role</button>
+                </form>
+                <form>
+                  <button
+                    id="delete"
+                    class="delete-button"
+                    type="click"
+                  >Eliminar</button>
+                </form>
+              </td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+    <script type="module" src="js/users.js"></script>
+  </body>
+</html>

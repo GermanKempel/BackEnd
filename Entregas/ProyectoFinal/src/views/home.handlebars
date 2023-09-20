@@ -1,20 +1,24 @@
 <html>
   <head>
-    <title>Lista de productos</title>
+    <title>Home</title>
   </head>
   <body>
+    <h1>Bienvenido a GKecommerce</h1>
+    <br />
+    <a href="/login">Ingrese su usuario o registrese para poder comprar</a>
+    <br />
     <h1>Lista de productos</h1>
     <ul>
-      {{#each products}}
+      {{#each products.docs}}
         <br />
-        <li>Title: {{this.title}}</li>
-        <li>Description: {{this.description}}</li>
-        <li>Code: {{this.code}}</li>
-        <li>Price: {{this.price}}</li>
-        <li>Status: {{this.status}}</li>
-        <li>Stock: {{this.stock}}</li>
-        <li>Category: {{this.category}}</li>
-        <li>Id: {{this.id}}</li>
+        <li>Title: {{title}}</li>
+        <li>Description: {{description}}</li>
+        <li>Code: {{code}}</li>
+        <li>Price: {{price}}</li>
+        <li>Status: {{status}}</li>
+        <li>Stock: {{stock}}</li>
+        <li>Category: {{category}}</li>
+        <li>Id: {{id}}</li>
         <br />
       {{/each}}
     </ul>
