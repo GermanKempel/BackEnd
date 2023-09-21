@@ -28,8 +28,8 @@ export const generateRandomProducts = () => {
       description: faker.commerce.productDescription(),
       code: faker.commerce.product(),
       price: faker.commerce.price(),
-      thumbnail: faker.image.imageUrl(),
-      stock: faker.datatype.number(),
+      thumbnail: faker.image.image.url(),
+      stock: faker.datatype.number.init(),
       category: faker.commerce.department()
     }
     products.push(product);

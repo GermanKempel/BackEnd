@@ -3,6 +3,7 @@ import { generateToken } from '../utils.js';
 import { createHash } from "../utils.js";
 import CartsRepository from "../repositories/carts.repository.js";
 import UsersRepository from "../repositories/users.repository.js";
+import logger from "../utils/loggers.js";
 
 const usersRepository = new UsersRepository();
 const cartsRepository = new CartsRepository();
@@ -12,7 +13,7 @@ const loginUser = async (email, password) => {
     const user = await usersRepository.getByEmail(email);
 
     if (!user || !password) {
-      throw new Error('Invalid credentials');
+      logger.info('User not found');
     }
 
     const token = generateToken(user);
@@ -37,7 +38,7 @@ const loginUser = async (email, password) => {
     return { token, cart: user.cart, user: lastUser };
 
   } catch (error) {
-    throw error;
+    logger.info('Error trying to login', error);
   }
 };
 

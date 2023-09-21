@@ -1,7 +1,7 @@
 import winston from 'winston';
 import config from '../config/config.js';
 
-const { ENVIRONMENT } = config;
+const { ENVIRONMENT } = config
 
 const customLevelOptions = {
   levels: {

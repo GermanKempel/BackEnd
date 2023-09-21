@@ -1,5 +1,6 @@
 import CartsRepository from "../repositories/carts.repository.js";
 import ProductsRepository from "../repositories/products.repository.js";
+import logger from "../utils/loggers.js";
 
 const cartsRepository = new CartsRepository();
 const productRepository = new ProductsRepository();
@@ -21,16 +22,16 @@ const getByUserId = async (userId) => {
 
 const addProduct = async (cartId, productId, quantity) => {
   if (!cartId) {
-    throw new Error('Cart not found');
+    logger.info('Cart not found');
   }
   if (!productId) {
-    throw new Error('Product not found');
+    logger.info('Product not found');
   }
 
   let result;
   const existingCart = await cartsRepository.getById(cartId);
   if (!existingCart) {
-    throw new Error('Cart not found');
+    logger.info('Cart not found');
   }
 
   const existingProduct = existingCart.products.find((item) => item.productId.toString() === productId.toString());
@@ -49,40 +50,42 @@ const addProduct = async (cartId, productId, quantity) => {
 }
 
 const calculateTotalPrice = async (products) => {
-  let totalPrice = 0;
-  for (const productItem of products) {
-    // Fetch product details including price from your repository or database
-    const product = await productRepository.getProductById(productItem.productId);
+  try {
+    let totalPrice = 0;
+    for (const productItem of products) {
 
-    if (product && typeof product.price === 'number') {
-      totalPrice += product.price * productItem.quantity;
+      const product = await productRepository.getProductById(productItem.productId);
+
+      if (product && typeof product.price === 'number') {
+        totalPrice += product.price * productItem.quantity;
+      }
     }
+
+    return totalPrice;
+  } catch (error) {
+    logger.info('Error trying to calculate total price', error);
   }
 
-  return totalPrice;
 }
 
 const removeProduct = async (cartId, productId) => {
   if (!cartId) {
-    throw new Error('Cart not found');
+    logger.info('Cart not found');
   }
   if (!productId) {
-    throw new Error('Product not found');
+    logger.info('Product not found');
   }
 
   const result = await cartsRepository.removeProduct(cartId, productId);
 
-  // Get the updated cart after removing the product
   const updatedCart = await cartsRepository.getById(cartId);
 
   if (!updatedCart) {
-    throw new Error('Cart not found');
+    logger.info('Cart not found');
   }
 
-  // Calculate the new total price for the updated cart
   const totalPrice = await calculateTotalPrice(updatedCart.products);
 
-  // Update the cart's total price
   updatedCart.totalPrice = totalPrice;
   await updatedCart.save();
 
@@ -93,7 +96,7 @@ const removeProduct = async (cartId, productId) => {
 const removeAllProducts = async (cartId) => {
   const result = await cartsRepository.removeAllProducts(cartId);
   if (!cartId) {
-    throw new Error('Cart not found');
+    logger.info('Cart not found');
   }
   return result;
 }
@@ -132,7 +135,7 @@ const purchaseCart = async (cartId) => {
   }
 
   if (!cartId) {
-    throw new Error('Cart not found');
+    logger.info('Cart not found');
   }
   return result;
 }
