@@ -6,8 +6,6 @@ const requester = supertest('http://localhost:8080');
 
 describe('Testing session', async () => {
 
-  await mongoose.connect('mongodb+srv://GermanKempel:GcsLTjZBjYXUT5Ht@cluster0.tnbfe67.mongodb.net/testing?retryWrites=true&w=majority');
-
   let token;
 
   it('Debemos registrar un usuario correctamente', async () => {

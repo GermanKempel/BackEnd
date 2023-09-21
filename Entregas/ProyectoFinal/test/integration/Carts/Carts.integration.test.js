@@ -6,8 +6,6 @@ const requester = supertest('http://localhost:8080');
 
 describe('Testing de carritos', async () => {
 
-  await mongoose.connect('mongodb+srv://GermanKempel:GcsLTjZBjYXUT5Ht@cluster0.tnbfe67.mongodb.net/testing?retryWrites=true&w=majority');
-
   it('GET de /carts debe devolver todos los carritos', async () => {
     const { statusCode, _body } = await requester.get('/api/carts');
 
